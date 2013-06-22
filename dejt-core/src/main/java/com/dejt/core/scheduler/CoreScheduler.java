@@ -48,9 +48,10 @@ public class CoreScheduler implements Serializable {
     @ApplicationScoped
     protected OrangeProxy proxy;
     
-    @Inject 
-    protected LocationOutput location;
-    
+    /**
+     * 
+     * @param timer 
+     */
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {
         
@@ -64,8 +65,11 @@ public class CoreScheduler implements Serializable {
         for (User u: activeUsers){
             
             try {
-                location = proxy.getLocation(u.getMsisdn());
-                u.setCurrentLocation(new GlobalPosition(location.getLatitude(), location.getLongitude(), 0.0));
+                LocationOutput location = 
+                    proxy.getLocation(u.getMsisdn());
+                u.setCurrentLocation(
+                    new GlobalPosition(location.getLatitude(), location.getLongitude(), 0.0)
+                );
             } catch (ProviderException p){
                 activeUsers.remove(u);
             }             
