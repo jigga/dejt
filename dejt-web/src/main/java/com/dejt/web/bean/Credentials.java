@@ -4,6 +4,7 @@
  */
 package com.dejt.web.bean;
 
+import java.text.MessageFormat;
 import javax.enterprise.inject.Model;
 
 /**
@@ -42,6 +43,11 @@ public class Credentials {
 
     public void setRemember(boolean remember) {
         this.remember = remember;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[uid={1}, pwd={2}]", getClass().getSimpleName(), username, password);
     }
     
 }

@@ -5,7 +5,6 @@
 package com.dejt.web.validation;
 
 import com.dejt.common.CRUDFacade;
-import com.dejt.common.model.User;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -21,8 +20,8 @@ import javax.inject.Named;
  * 
  * @author jigga
  */
-@Named("UIDValidator")
 @RequestScoped
+@Named("UIDValidator")
 public class UIDValidator implements Validator {
     
     @Inject
@@ -42,8 +41,12 @@ public class UIDValidator implements Validator {
     public void validate(FacesContext context, UIComponent component, Object value)
         throws ValidatorException {
         
-        User user = facade.read(User.class, value);
-        if (user!=null) {
+        boolean uidTaken = ((Number)facade.getEntityManager()
+            .createNamedQuery("User.checkUID")
+            .setParameter("uid", String.valueOf(value))
+            .getSingleResult())
+            .intValue()>0;
+        if (uidTaken) {
             throw new ValidatorException(new FacesMessage(
                 FacesMessage.SEVERITY_ERROR, "Identifikator \"" + value + "\" jest już zajęty.", null
             ));

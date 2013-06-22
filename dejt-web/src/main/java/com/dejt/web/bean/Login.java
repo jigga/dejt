@@ -4,6 +4,8 @@
  */
 package com.dejt.web.bean;
 
+import com.dejt.common.CRUDFacade;
+import com.dejt.common.model.User;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
@@ -26,12 +28,21 @@ public class Login implements Serializable {
     private static final long serialVersionUID = -4951965096369975468L;
     
     @Inject
+    private CRUDFacade facade;
+    
+    @Inject
     private Credentials credentials;
     
-    // Holds username of the currently logged in user.
-    private String user;
+    // User entity - initialized after successful login
+    private User user;
     
-    private String target;
+    public boolean isLoggedIn() {
+        return user != null;
+    }
+
+    public User getUser() {
+        return user;
+    }
     
     /**
      * Login action. Delegates authentication to servlet container.
@@ -49,20 +60,19 @@ public class Login implements Serializable {
         HttpServletRequest request = 
             (HttpServletRequest)context.getRequest();
         try {
+            
+            // delegate login logic to the web container
             request.login(credentials.getUsername(), credentials.getPassword());
-            user = credentials.getUsername();
-            if (target != null) {
-                System.out.println("Redirecting user to " + target + " after successful login.");
-                context.redirect(target);
-                return null;
-            }
+            
+            // fetching User entity after successfull login
+            user = facade.read(User.class, credentials.getUsername());
+            
+            // redirecting user to the home page.
             return "/home/index?faces-redirect=true";
+            
         } catch (ServletException e) {
-            context.getFlash().put(
-                "login-message",
-                "Błędna nazwa użytkownika lub hasło. Spróbuj ponownie."
-            );
-            return "/login?faces-redirect=true";
+            // TODO: add faces message.
+            return null;
         }
     }
     
@@ -86,18 +96,6 @@ public class Login implements Serializable {
         
         return null;
         
-    }
-
-    public boolean isLoggedIn() {
-        return user != null;
-    }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
     }
     
 }
