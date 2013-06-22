@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.persistence.annotations.ConversionValue;
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.ObjectTypeConverter;
+import org.gavaghan.geodesy.GlobalPosition;
 
 /**
  *
@@ -130,6 +131,9 @@ public class User implements Serializable {
     
     @Transient
     private Msisdn msisdn;
+    
+    @Transient
+    private GlobalPosition currentLocation;
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
@@ -326,6 +330,14 @@ public class User implements Serializable {
 
     public void setAlbums(List<Photoalbum> albums) {
         this.albums = albums;
+    }
+
+    public GlobalPosition getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(GlobalPosition currentLocation) {
+        this.currentLocation = currentLocation;
     }
     
     @Override
