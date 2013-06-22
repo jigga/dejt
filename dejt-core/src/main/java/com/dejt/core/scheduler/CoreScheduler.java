@@ -51,8 +51,6 @@ public class CoreScheduler implements Serializable {
     @Inject 
     protected LocationOutput location;
     
-    private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
-    
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {
         
