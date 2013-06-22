@@ -31,13 +31,13 @@ import org.gavaghan.geodesy.GeodeticCalculator;
 @ApplicationScoped
 public class CoreScheduler implements Serializable {
 
-    private static final String API_KEY = "JUnitPU";
-    
     @Inject
     protected CRUDFacade facade;
     
     @Inject
     protected Matcher matcher;
+    
+    private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
     
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {

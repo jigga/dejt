@@ -4,6 +4,8 @@
  */
 package com.dejt.common.model;
 
+import com.dejt.common.ISOCountry;
+import com.dejt.common.Msisdn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -81,9 +84,10 @@ public class User implements Serializable {
     @Column(name = "Surname")
     private String surname;
     
+    // Holds ISO country codes.
     @Size(max = 30)
     @Column(name = "Country")
-    private String country;
+    private ISOCountry country;
     
     @Size(max = 30)
     @Column(name = "Region")
@@ -124,6 +128,9 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
     
+    @Transient
+    private Msisdn msisdn;
+    
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
     
@@ -158,7 +165,7 @@ public class User implements Serializable {
         this.uid = uid;
     }
 
-    public User(String uid, String name, String surname, String email, String country, String phoneNumber) {
+    public User(String uid, String name, String surname, String email, ISOCountry country, String phoneNumber) {
         this.uid = uid;
         this.name = name;
         this.surname = surname;
@@ -167,6 +174,13 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    public Msisdn getMsisdn() {
+        if (msisdn==null) {
+            this.msisdn = new Msisdn(country, phoneNumber);
+        }
+        return msisdn;
+    }
+    
     public boolean isActive() {
         return active;
     }
@@ -207,11 +221,11 @@ public class User implements Serializable {
         this.surname = surname;
     }
 
-    public String getCountry() {
+    public ISOCountry getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(ISOCountry country) {
         this.country = country;
     }
 
