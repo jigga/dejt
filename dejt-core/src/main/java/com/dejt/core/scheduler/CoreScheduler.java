@@ -6,9 +6,10 @@ package com.dejt.core.scheduler;
 
 import com.dejt.common.CRUDFacade;
 import com.dejt.common.model.User;
+import com.dejt.common.spi.ProviderException;
+import com.dejt.common.spi.orange.LocationOutput;
 import com.dejt.common.spi.orange.OrangeProxy;
 import com.dejt.core.Matcher;
-import com.dejt.core.util.UserLocation;
 import com.dejt.core.util.UserPair;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Sender;
@@ -24,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.gavaghan.geodesy.Ellipsoid;
 import org.gavaghan.geodesy.GeodeticCalculator;
+import org.gavaghan.geodesy.GlobalPosition;
 
 /**
  *
@@ -46,6 +48,11 @@ public class CoreScheduler implements Serializable {
     @ApplicationScoped
     protected OrangeProxy proxy;
     
+    @Inject 
+    protected LocationOutput location;
+    
+    private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
+    
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {
         
@@ -55,17 +62,19 @@ public class CoreScheduler implements Serializable {
             .setParameter("active", Boolean.TRUE)
             .getResultList();
 
-        //declare array containing users with their locations        
-        int userCount = activeUsers.size();
-        UserLocation[] locTable;
-        locTable = new UserLocation[userCount];
-        
-        //fill array with data        
-        for (int k=0; k<userCount; k++){             
-             locTable[k] = new UserLocation(activeUsers.get(k)); 
+        //set users locations        
+        for (User u: activeUsers){
+            
+            try {
+                location = proxy.getLocation(u.getMsisdn());
+                u.setCurrentLocation(new GlobalPosition(location.getLatitude(), location.getLongitude(), 0.0));
+            } catch (ProviderException p){
+                activeUsers.remove(u);
+            }             
         }
 
-        //declare list containg matching users        
+        //declare list containg matching users 
+        int userCount = activeUsers.size();
         List<UserPair> closePairsList;
         closePairsList = new ArrayList<>();
                  
@@ -75,11 +84,13 @@ public class CoreScheduler implements Serializable {
 
         for (int i=0; i<userCount-1; i++){
             for (int j=i+1; j<userCount; j++){
-                double distance = 
-                    geoCalc.calculateGeodeticCurve(reference, locTable[i].getPosition(), locTable[j].getPosition()).getEllipsoidalDistance();
+                double distance = geoCalc.calculateGeodeticCurve(reference, 
+                        activeUsers.get(i).getCurrentLocation(), 
+                        activeUsers.get(j).getCurrentLocation())
+                        .getEllipsoidalDistance();
                 
-                if (distance < 500 && matcher.matchUsers(locTable[i].getUser(), locTable[j].getUser())) {
-                    closePairsList.add(new UserPair(locTable[i].getUser(), locTable[j].getUser()));
+                if (distance < 500 && matcher.matchUsers(activeUsers.get(i), activeUsers.get(j))) {
+                    closePairsList.add(new UserPair(activeUsers.get(i), activeUsers.get(j)));
                 }
             }    
         }
