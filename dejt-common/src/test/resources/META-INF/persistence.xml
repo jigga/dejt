@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="JUnitPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.dejt.common.model.DBody</class>
+    <class>com.dejt.common.model.DCharacter</class>
+    <class>com.dejt.common.model.DEducation</class>
+    <class>com.dejt.common.model.DEyeColor</class>
+    <class>com.dejt.common.model.DGroup</class>
+    <class>com.dejt.common.model.DHair</class>
+    <class>com.dejt.common.model.DInterest</class>
+    <class>com.dejt.common.model.DMaritalstatus</class>
+    <class>com.dejt.common.model.DOccupation</class>
+    <class>com.dejt.common.model.DOrientation</class>
+    <class>com.dejt.common.model.DReligion</class>
+    <class>com.dejt.common.model.DTerm</class>
+    <class>com.dejt.common.model.DTolerance</class>
+    <class>com.dejt.common.model.Friendship</class>
+    <class>com.dejt.common.model.Photoalbum</class>
+    <class>com.dejt.common.model.Picture</class>
+    <class>com.dejt.common.model.Preferences</class>
+    <class>com.dejt.common.model.Profile</class>
+    <class>com.dejt.common.model.User</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:aramis;create=true"/>
+      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+      <property name="javax.persistence.jdbc.user" value=""/>
+      <property name="javax.persistence.jdbc.password" value=""/>
+      
+      <property name="eclipselink.target-database" value="Derby"/>
+      <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.orm.throw.exceptions" value="true"/>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+      <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+    </properties>
+  </persistence-unit>
+</persistence>

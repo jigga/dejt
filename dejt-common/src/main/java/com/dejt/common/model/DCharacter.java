@@ -1,0 +1,82 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.dejt.common.model;
+
+import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ * @author jigga
+ */
+@Entity
+@Table(name = "D_CHARACTER")
+@XmlRootElement
+public class DCharacter implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
+    public enum CharacterType {
+        
+        A("Szalony"),
+        B("Beztroski"),
+        C("Spokojny"),
+        L("Czuły"),
+        N("Nieśmiały"),
+        O("Rozrywkowy"),
+        P("Ponury"),
+        R("Romantyczny"),
+        S("Samotnik"),
+        T("Towarzyski"),
+        U("Uparty"),
+        W("Wesoły"),
+        Z("Zrównoważony");
+        
+        private String desc;
+
+        private CharacterType(String desc) {
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+    }
+    
+    @Id
+    @Basic(optional = false)
+    @Column(name = "CHARACTER_TYPE")
+    @Enumerated(EnumType.STRING)
+    private CharacterType characterType;
+
+    public DCharacter() {
+    }
+
+    public DCharacter(CharacterType characterType) {
+        this.characterType = characterType;
+    }
+
+    public CharacterType getCharacterType() {
+        return characterType;
+    }
+
+    public void setCharacterType(CharacterType characterType) {
+        this.characterType = characterType;
+    }
+
+    @Override
+    public String toString() {
+        return "com.dejt.model.DCharacter[characterType=" + characterType + " ]";
+    }
+    
+}

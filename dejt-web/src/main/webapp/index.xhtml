@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/templates/layout/welcome.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+  <ui:define name="carousel-items">
+    <style>.control-group {margin-bottom: 0;}</style>
+    <div class="item active">
+      <img src="http://dejt.arkadiuszg.pl/assets/img/dejt01a2.jpg" alt=""></img>
+      <div class="container">
+        <h:panelGroup id="registration-box" layout="block" styleClass="pull-right" style="margin-top: 100px; width: 370px;">
+          <h:panelGroup layout="block" rendered="#{!registrar.registered}">
+            <h2 style="color: white; text-shadow: 0 1px 1px rgba(0,0,0,.4);"><h:outputText value="Zarejestruj się"/></h2>
+            <h:form id="registration">
+              <h:panelGroup id="uid-pnl" layout="block"
+                            styleClass="#{uid.valid ? 'control-group' : 'control-group error'}">
+                <div class="controls">
+                  <h:inputText id="uid" binding="#{uid}" p:placeholder="Nazwa użytkownika" styleClass="span4" value="#{registrar.user.uid}">
+                    <f:validator binding="#{UIDValidator}"/>
+                    <f:ajax execute="@this" render="uid-pnl"/>
+                  </h:inputText>
+                  <h:message for="uid" styleClass="help-block"/>
+                </div>
+              </h:panelGroup>
+              <div class="#{uname.valid ? 'control-group' : 'control-group error'}">
+                <div class="controls controls-row">
+                  <h:inputText id="uname" binding="#{uname}" styleClass="span2"
+                               p:placeholder="#{uname.valid ? 'Imię' : 'Imię: Pole wymagane'}"
+                               value="#{registrar.user.name}" 
+                               required="true" requiredMessage="Pole wymagane"/>
+                  <h:inputText id="usurname" binding="#{usurname}" styleClass="span2"
+                               p:placeholder="#{usurname.valid ? 'Nazwisko' : 'Nazwisko: Pole wymagane'}"
+                               value="#{registrar.user.surname}" 
+                               required="true" requiredMessage="Pole wymagane"/>
+                </div>
+              </div>
+              <div class="#{uemail.valid ? 'control-group' : 'control-group error'}">
+                <div class="controls">
+                  <h:inputText id="uemail" binding="#{uemail}" p:placeholder="Adres E-Mail" styleClass="span4" value="#{registrar.user.email}"
+                               required="true" requiredMessage="Pole wymagane"/>
+                  <h:message for="uemail" styleClass="help-block"/>
+                </div>
+              </div>
+              <div class="#{uphoneNumber.valid ? 'control-group' : 'control-group error'}">
+                <div class="controls">
+                  <h:inputText id="uphoneNumber" binding="#{uphoneNumber}" p:placeholder="Nr Telefonu" styleClass="span4" value="#{registrar.user.phoneNumber}"
+                               required="true" requiredMessage="Pole wymagane"/>
+                  <h:message for="uphoneNumber" styleClass="help-block"/>
+                </div>
+              </div>
+              <div class="#{upassword.valid ? 'control-group' : 'control-group error'}">
+                <div class="controls">
+                  <h:inputSecret id="upassword" binding="#{upassword}" styleClass="span4" value="#{registrar.user.password}"
+                                 required="true" requiredMessage="Pole wymagane"/>
+                  <h:message for="upassword" styleClass="help-block"/>
+                </div>
+              </div>
+              <h:commandLink id="register" styleClass="btn btn-primary btn-large" value="Utwórz Konto">
+                <f:ajax execute="@form" render="@form :registration-box" listener="#{registrar.registerUser}"/>
+              </h:commandLink>
+            </h:form>
+          </h:panelGroup>
+          <h:panelGroup layout="block" rendered="#{registrar.registered}">
+            <h2 style="color: white; text-shadow: 0 1px 1px rgba(0,0,0,.4);"><h:outputText value="Gratulacje!"/></h2>
+            <p class="lead"><h:outputText value="Konto w serwisie zostało utworzone. Zaloguj się używając formularza logowania w pasku nawigacji."/></p>
+          </h:panelGroup>
+        </h:panelGroup>
+      </div>
+    </div>
+    <div class="item">
+      <img src="http://dejt.arkadiuszg.pl/assets/img/slide-02.jpg" alt=""></img>
+      <div class="container">
+        <div class="pull-right controls controls-row" style="margin-top: 100px;">
+          <h2><h:outputText value="Zarejestruj się"/></h2>
+          <form>
+            <input type="text" placeholder="Nazwa użytkownika" class="span4"/><br/>
+            <input type="text" placeholder="Imię" class="span2"/>
+            <input type="text" placeholder="Nazwisko" class="span2"/><br/>
+            <input type="text" placeholder="Adres E-Mail" class="span4"/><br/>
+            <input type="text" placeholder="Nr Telefonu" class="span4"/><br/>
+            <input type="password" placeholder="Hasło" class="span4"/><br/>
+            <button type="submit" class="btn btn-primary btn-large">Utwórz Konto</button>
+          </form>
+        </div>
+        <div class="carousel-caption">
+          <h1>Another example headline.</h1>
+          <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+          <a class="btn btn-large btn-primary" href="#">Learn more</a>
+        </div>
+      </div>
+    </div>
+    <div class="item">
+      <img src="http://dejt.arkadiuszg.pl/assets/img/slide-03.jpg" alt=""></img>
+      <div class="container">
+        <div class="carousel-caption">
+          <h1>One more for good measure.</h1>
+          <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+          <a class="btn btn-large btn-primary" href="#">Browse gallery</a>
+        </div>
+      </div>
+    </div>
+  </ui:define>
+  
+  <ui:define name="content">
+    <!-- Three columns of text below the carousel -->
+    <div class="row">
+      <div class="span4">
+        <img class="img-circle" data-src="holder.js/140x140"></img>
+        <h2>Heading</h2>
+        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+        <p><a class="btn" href="#">View details &#187;</a></p>
+      </div><!-- /.span4 -->
+      <div class="span4">
+        <img class="img-circle" data-src="holder.js/140x140"></img>
+        <h2>Heading</h2>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn" href="#">View details &#187;</a></p>
+      </div><!-- /.span4 -->
+      <div class="span4">
+        <img class="img-circle" data-src="holder.js/140x140"></img>
+        <h2>Heading</h2>
+        <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p><a class="btn" href="#">View details &#187;</a></p>
+      </div><!-- /.span4 -->
+    </div><!-- /.row -->
+
+
+    <!-- START THE FEATURETTES -->
+
+    <hr class="featurette-divider"/>
+
+    <div class="featurette">
+      <img class="featurette-image pull-right" src="http://dejt.arkadiuszg.pl/assets/img/browser-icon-chrome.png"></img>
+      <h2 class="featurette-heading">First featurette headling. <span class="muted">It'll blow your mind.</span></h2>
+      <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+    </div>
+
+    <hr class="featurette-divider"/>
+
+    <div class="featurette">
+      <img class="featurette-image pull-left" src="http://dejt.arkadiuszg.pl/assets/img/browser-icon-firefox.png"></img>
+      <h2 class="featurette-heading">Oh yeah, it's that good. <span class="muted">See for yourself.</span></h2>
+      <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+    </div>
+
+    <hr class="featurette-divider"/>
+
+    <div class="featurette">
+      <img class="featurette-image pull-right" src="http://dejt.arkadiuszg.pl/assets/img/browser-icon-safari.png"></img>
+      <h2 class="featurette-heading">And lastly, this one. <span class="muted">Checkmate.</span></h2>
+      <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+    </div>
+
+    <hr class="featurette-divider"/><!-- /END THE FEATURETTES -->
+
+    <!-- FOOTER -->
+    <footer>
+      <p class="pull-right"><a href="#">Back to top</a></p>
+      <p>&#169; 2013 Company, Inc. &#183; <a href="#">Privacy</a> &#183; <a href="#">Terms</a></p>
+    </footer>
+  </ui:define>
+
+</ui:composition>
