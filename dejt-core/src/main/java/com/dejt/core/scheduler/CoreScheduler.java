@@ -37,6 +37,8 @@ public class CoreScheduler implements Serializable {
     @Inject
     protected Matcher matcher;
     
+    public static final String API_KEY = "JUnitPU";
+    
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {
         
@@ -76,7 +78,7 @@ public class CoreScheduler implements Serializable {
         }
 
         //send push notifications to matching users
-        Sender sender = new Sender("AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0");
+        Sender sender = new Sender(API_KEY);
         userCount = closePairsList.size();
         for (int k=0; k<userCount; k++){
             
