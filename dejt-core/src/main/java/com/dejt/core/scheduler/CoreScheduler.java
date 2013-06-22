@@ -76,7 +76,7 @@ public class CoreScheduler implements Serializable {
         }
 
         //send push notifications to matching users
-        Sender sender = new Sender("DEJT");
+        Sender sender = new Sender("AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0");
         userCount = closePairsList.size();
         for (int k=0; k<userCount; k++){
             
