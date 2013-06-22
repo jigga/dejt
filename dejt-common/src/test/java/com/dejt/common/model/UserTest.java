@@ -4,6 +4,7 @@
  */
 package com.dejt.common.model;
 
+import com.dejt.common.ISOCountry;
 import java.util.Calendar;
 import java.util.Date;
 import org.junit.*;
@@ -31,7 +32,7 @@ public class UserTest extends DejtEntityTest {
             "Arkadiusz",
             "Gasiński",
             "user@domain.com",
-            "PL",
+            ISOCountry.PL,
             "501500989"
         );
         
