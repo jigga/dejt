@@ -4,15 +4,19 @@
  */
 package com.dejt.common.spi.orange;
 
+import com.dejt.common.ISOCountry;
 import com.dejt.common.Msisdn;
 import com.dejt.common.spi.ProviderException;
 import com.dejt.common.util.JsonUtils;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -35,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author sajara
  * @author jigga
  */
+@Named
 @ApplicationScoped
 public class OrangeProxyImpl implements OrangeProxy {
     
@@ -71,8 +76,32 @@ public class OrangeProxyImpl implements OrangeProxy {
     
     static {
         
+        byte[] trustStoreBytes;
+        InputStream is = null;
+        ByteArrayOutputStream baos = null;
+        try {
+            is = OrangeProxyImpl.class.getResourceAsStream("/cacerts");
+            baos = new ByteArrayOutputStream();
+            int nRead;
+            byte[] buffer = new byte[16384];        
+            while ((nRead = is.read(buffer, 0, buffer.length)) != -1) {
+              baos.write(buffer, 0, nRead);
+            }
+            baos.flush();
+            
+            trustStoreBytes = baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (is!=null) {is.close();}
+                if (baos!=null) {baos.close();}
+            } catch (Exception e) {}
+        }
+        
+        
         SslConfigurator sslConfig = SslConfigurator.newInstance()
-            .trustStoreFile(OrangeProxyImpl.class.getResource("/cacerts").getPath())
+            .trustStoreBytes(trustStoreBytes)
             .trustStorePassword(TRUSTSTORE_PASSWORD);
         SSLContext sslContext = sslConfig.createSSLContext();
         
@@ -271,6 +300,12 @@ public class OrangeProxyImpl implements OrangeProxy {
                 throw new ProviderException(String.valueOf(response));
         }
         
+    }
+    
+    public static void main(String[] args) throws Exception {
+        Msisdn msisdn = new Msisdn(ISOCountry.PL, "505576253");
+        OrangeProxy proxy = new OrangeProxyImpl();
+        proxy.sendSMS(msisdn, msisdn, "Yet another simple test.");
     }
     
 }

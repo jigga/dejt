@@ -17,8 +17,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -47,21 +45,16 @@ public class Picture implements Serializable {
     private Long id;
     
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 150)
     @Column(name = "PictureFile")
     private String pictureFile;
     
-    @Size(max = 50)
     @Column(name = "PictureTitle")
     private String pictureTitle;
     
-    @Size(max = 255)
     @Column(name = "PictureComment")
     private String pictureComment;
     
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CreationTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;

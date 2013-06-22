@@ -19,8 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -47,12 +45,9 @@ public class Photoalbum implements Serializable {
     private Long id;
     
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "AlbumTitle")
     private String albumTitle;
     
-    @Size(max = 255)
     @Column(name = "AlbumComment")
     private String albumComment;
     

@@ -23,8 +23,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -47,25 +45,20 @@ public class Preferences implements Serializable {
     @JoinColumn(name = "UID")
     private User user;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "AgeLow")
     private short ageLow;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "AgeHigh")
     private short ageHigh;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "Gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
     
-    @NotNull
     @Basic(optional = false)
-    @Size(min = 1, max = 4)
     @Column(name = "Orientation")
     private String orientation;
     
@@ -81,7 +74,6 @@ public class Preferences implements Serializable {
     )
     private List<DOrientation> orientationPreferences;
     
-    @Size(max = 6)
     @Column(name = "Body")
     private String body;
     
@@ -91,40 +83,31 @@ public class Preferences implements Serializable {
     @Column(name = "HeightHigh")
     private Short heightHigh;
     
-    @Size(max = 6)
     @Column(name = "EyeColor")
     private String eyeColor;
     
-    @Size(max = 8)
     @Column(name = "HairColor")
     private String hairColor;
     
-    @Size(max = 10)
     @Column(name = "Interests")
     private String interests;
     
-    @Size(max = 7)
     @Column(name = "Education")
     private String education;
     
-    @Size(max = 10)
     @Column(name = "Occupation")
     private String occupation;
     
-    @Size(max = 5)
     @Column(name = "MaritalStatus")
     private String maritalStatus;
     
-    @Size(max = 9)
     @Column(name = "Religion")
     private String religion;
     
-    @Size(max = 7)
     @Column(name = "Terms")
     private String terms;
     
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CreationTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;

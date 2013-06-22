@@ -20,7 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.persistence.annotations.Convert;
 
@@ -39,7 +38,6 @@ public class Profile implements Serializable {
     @Column(name = "UID")
     private String uid;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "Gender")
     private Gender gender;
@@ -53,7 +51,6 @@ public class Profile implements Serializable {
     @Column(name = "Height")
     private short height;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "CreationTime")
     @Temporal(TemporalType.TIMESTAMP)

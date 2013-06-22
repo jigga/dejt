@@ -12,7 +12,8 @@ import java.util.Locale;
  */
 public enum ISOCountry {
     
-    PL((short)48);
+    PL((short)48),
+    SE((short)46);
 
     private short areaCode;
 

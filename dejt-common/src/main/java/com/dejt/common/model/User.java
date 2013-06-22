@@ -7,6 +7,7 @@ package com.dejt.common.model;
 import com.dejt.common.ISOCountry;
 import com.dejt.common.Msisdn;
 import java.io.Serializable;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -27,9 +30,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.persistence.annotations.ConversionValue;
 import org.eclipse.persistence.annotations.Convert;
@@ -54,67 +54,50 @@ import org.gavaghan.geodesy.GlobalPosition;
     defaultObjectValue="FALSE"
 )
 @NamedQueries({
-    @NamedQuery(name = "User.findByActiveFlag", query = "SELECT u FROM User u WHERE u.active=:active")
+    @NamedQuery(name = "User.findByActiveFlag", query = "SELECT u FROM User u WHERE u.active=:active"),
+    @NamedQuery(name = "User.checkUID", query = "SELECT COUNT(u.uid) FROM User u WHERE u.uid=:uid")
 })
 public class User implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @Id
-    @NotNull
     @Basic(optional = false)
-    @Size(min = 6, max = 30, message = "Nazwa użytkownika musi zawierać od 6 do 30 znaków")
     @Column(name = "UID", length = 30)
     private String uid;
     
-    @NotNull
     @Basic(optional = false)
-    @Size(min = 8, max = 30, message = "Hasło musi zawierać od 8 do 30 znaków")
     @Column(name = "Password", length = 30)
     private String password;
     
-    @NotNull
     @Basic(optional = false)
-    @Size(min = 1, max = 30)
     @Column(name = "Name")
     private String name;
     
-    @NotNull
     @Basic(optional = false)
-    @Size(min = 1, max = 30)
     @Column(name = "Surname")
     private String surname;
     
     // Holds ISO country codes.
-    @Size(max = 30)
     @Column(name = "Country")
+    @Enumerated(EnumType.STRING)
     private ISOCountry country;
     
-    @Size(max = 30)
     @Column(name = "Region")
     private String region;
     
-    @Size(max = 30)
     @Column(name = "City")
     private String city;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "PhoneNumber")
     private String phoneNumber;
     
-    @NotNull
-    @Pattern(
-        regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-        message="Błędny format adresu e-mail"
-    )
     @Basic(optional = false)
-    @Size(min = 1, max = 100)
     @Column(name = "EMail")
     private String email;
     
     @Basic(optional = false)
-    @Size(min = 1, max = 200)
     @Column(name = "Comment")
     private String comment;
     
@@ -123,7 +106,6 @@ public class User implements Serializable {
     @Convert("BooleanConverter")
     private boolean active;
     
-    @NotNull
     @Basic(optional = false)
     @Column(name = "CreationTime")
     @Temporal(TemporalType.TIMESTAMP)
@@ -343,6 +325,28 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.dejt.model.User[ uid=" + uid + " ]";
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(sha256("mojehaslo"));
+    }
+    
+    public static String sha256(String base) {
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch(Exception ex){
+           throw new RuntimeException(ex);
+        }
     }
     
 }
