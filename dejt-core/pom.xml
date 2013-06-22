@@ -29,7 +29,7 @@
     <dependency>
       <groupId>dejt</groupId>
       <artifactId>dejt-common</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.persistence</groupId>

@@ -6,6 +6,7 @@ package com.dejt.core.scheduler;
 
 import com.dejt.common.CRUDFacade;
 import com.dejt.common.model.User;
+import com.dejt.common.spi.orange.OrangeProxy;
 import com.dejt.core.Matcher;
 import com.dejt.core.util.UserLocation;
 import com.dejt.core.util.UserPair;
@@ -36,6 +37,9 @@ public class CoreScheduler implements Serializable {
     
     @Inject
     protected Matcher matcher;
+    
+    @Inject
+    protected OrangeProxy proxy;
     
     private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
     

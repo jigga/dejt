@@ -4,7 +4,6 @@
  */
 package com.dejt.common.spi.orange;
 
-import com.dejt.common.ISOCountry;
 import com.dejt.common.Msisdn;
 import com.dejt.common.spi.ProviderException;
 import com.dejt.common.util.JsonUtils;
@@ -13,6 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -35,32 +35,33 @@ import org.slf4j.LoggerFactory;
  * @author sajara
  * @author jigga
  */
+@ApplicationScoped
 public class OrangeProxyImpl implements OrangeProxy {
     
     /**
      * Username for authentication to Hackathon APIs.
      */
-    public static final String USERNAME = "hackathon60";
+    protected static final String USERNAME = "hackathon60";
     
     /**
      * Password for authentication to Hackathon APIs.
      */
-    public static final String PASSWORD = "vAA9S2D9";
+    protected static final String PASSWORD = "vAA9S2D9";
     
     /**
      * Password for generated CACERT file.
      */
-    public static final String TRUSTSTORE_PASSWORD = "password";
+    protected static final String TRUSTSTORE_PASSWORD = "password";
     
     /**
      * CONNECT_TIMEOUT for client connecting to Hackathon APIs.
      */
-    public static final int CONNECT_TIMEOUT = 5000;
+    protected static final int CONNECT_TIMEOUT = 5000;
     
     /**
      * READ_TIMEOUT for client connecting to Hackathon APIs.
      */
-    public static final int READ_TIMEOUT = 30000;
+    protected static final int READ_TIMEOUT = 30000;
     
     
     protected static final Logger logger = 
