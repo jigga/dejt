@@ -7,6 +7,7 @@ package com.dejt.core.util;
 import com.dejt.common.CRUDFacade;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Named;
 import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
@@ -17,7 +18,8 @@ import javax.persistence.PersistenceContext;
  * 
  * @author jigga
  */
-@Stateless
+@Named
+@Stateless(name = "SessionFacade")
 public class SessionFacade implements CRUDFacade {
     
     protected static final String READALL_QUERY_FORMAT = 

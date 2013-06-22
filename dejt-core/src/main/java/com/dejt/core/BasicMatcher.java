@@ -9,13 +9,11 @@ import com.dejt.common.model.Profile;
 import com.dejt.common.model.User;
 import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
 
 /**
  *
  * @author jigga
  */
-@Named
 @ApplicationScoped
 public class BasicMatcher implements Matcher, Serializable {
     

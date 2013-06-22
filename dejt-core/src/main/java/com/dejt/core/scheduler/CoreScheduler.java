@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Timer;
@@ -32,16 +33,18 @@ import org.gavaghan.geodesy.GeodeticCalculator;
 @ApplicationScoped
 public class CoreScheduler implements Serializable {
 
-    @Inject
+    private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
+    
+    @EJB(beanName = "SessionFacade")
     protected CRUDFacade facade;
     
     @Inject
+    @ApplicationScoped
     protected Matcher matcher;
     
     @Inject
+    @ApplicationScoped
     protected OrangeProxy proxy;
-    
-    private static final String API_KEY = "AIzaSyAeuXFV1Hav1dgzteLLKbvFpsqc-LK2tV0";
     
     @Schedule(hour = "*", minute = "*", info = "Dejt Core Scheduler")
     protected void schedule(Timer timer) {
