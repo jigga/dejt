@@ -18,10 +18,13 @@ import com.dejt.common.model.Preferences;
 import com.dejt.common.model.User;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,22 +48,83 @@ public class PreferencesManager  implements Serializable {
     
     private Integer ageLow;
     private Integer ageHigh;
+    private Integer heightLow;
+    private Integer heightHigh;
     private Gender gender;
     
-    
-    private List<DBody.BodyType> bodyPreferences;
-    private List<DEducation.EducationType> educationPreferences;
-    private List<DEyeColor.EyeColor> eyePreferences;
-    private List<DHair.HairColor> hairPreferences;
-    private List<DOccupation.Occupation> occupationPreferences;
-    private List<DOrientation.Orientation> orientationPreferences;
-    private List<DMaritalstatus.MaritalStatus> maritalPreferences;
-    private List<DReligion.Religion> religionPreferences;
+    private List<DBody.BodyType> bodyPreferences = 
+            new ArrayList<>();
+    private List<DEducation.EducationType> educationPreferences = 
+            new ArrayList<>();
+    private List<DEyeColor.EyeColor> eyePreferences = 
+            new ArrayList<>();
+    private List<DHair.HairColor> hairPreferences = 
+            new ArrayList<>();
+    private List<DOccupation.Occupation> occupationPreferences = 
+            new ArrayList<>();
+    private List<DOrientation.Orientation> orientationPreferences = 
+            new ArrayList<>();
+    private List<DMaritalstatus.MaritalStatus> maritalPreferences = 
+            new ArrayList<>();
+    private List<DReligion.Religion> religionPreferences = 
+            new ArrayList<>();
     
     @PostConstruct
     protected void init() {
         this.preferences = 
             facade.read(Preferences.class, user.getUid());
+        if (preferences==null) {
+            preferences = new Preferences(user);
+            preferences.setCreationTime(new Date());
+            user.setPreferences(preferences);
+        } else {
+            ageLow = preferences.getAgeLow();
+            ageHigh = preferences.getAgeHigh();
+            heightLow = preferences.getHeightLow();
+            heightHigh = preferences.getHeightHigh();
+            gender = preferences.getGender();
+            
+            if (!isNullOrEmpty(preferences.getBodyPreferences())) {
+                for (DBody body : preferences.getBodyPreferences()) {
+                    bodyPreferences.add(body.getBodyType());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getEducationPreferences())) {
+                for (DEducation edu : preferences.getEducationPreferences()) {
+                    educationPreferences.add(edu.getEducationType());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getEyePreferences())) {
+                for (DEyeColor ec : preferences.getEyePreferences()) {
+                    eyePreferences.add(ec.getEyeColor());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getHairPreferences())) {
+                for (DHair hair : preferences.getHairPreferences()) {
+                    hairPreferences.add(hair.getHairColor());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getOccupationPreferences())) {
+                for (DOccupation occ : preferences.getOccupationPreferences()) {
+                    occupationPreferences.add(occ.getOccupation());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getOrientationPreferences())) {
+                for (DOrientation orient : preferences.getOrientationPreferences()) {
+                    orientationPreferences.add(orient.getOrientation());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getMaritalPreferences())) {
+                for (DMaritalstatus ms : preferences.getMaritalPreferences()) {
+                    maritalPreferences.add(ms.getMaritalStatus());
+                }
+            }
+            if (!isNullOrEmpty(preferences.getReligionPreferences())) {
+                for (DReligion religion : preferences.getReligionPreferences()) {
+                    religionPreferences.add(religion.getReligion());
+                }
+            }
+        }
     }
 
     public Integer getAgeLow() {
@@ -87,6 +151,22 @@ public class PreferencesManager  implements Serializable {
         this.gender = gender;
     }
 
+    public Integer getHeightLow() {
+        return heightLow;
+    }
+
+    public void setHeightLow(Integer heightLow) {
+        this.heightLow = heightLow;
+    }
+
+    public Integer getHeightHigh() {
+        return heightHigh;
+    }
+
+    public void setHeightHigh(Integer heightHigh) {
+        this.heightHigh = heightHigh;
+    }
+    
     public List<DBody.BodyType> getBodyPreferences() {
         return bodyPreferences;
     }
@@ -165,6 +245,135 @@ public class PreferencesManager  implements Serializable {
     
     public void saveUserPreferences(AjaxBehaviorEvent event) {
         
+        if (ageLow!=null) {
+            user.getPreferences().setAgeLow(ageLow);
+        }
+        if (ageHigh!=null) {
+            user.getPreferences().setAgeHigh(ageHigh);
+        }
+        if (heightLow!=null) {
+            user.getPreferences().setHeightLow(heightLow);
+        }
+        if (heightHigh!=null) {
+            user.getPreferences().setHeightHigh(heightHigh);
+        }
+        if (gender!=null) {
+            user.getPreferences().setGender(gender);
+        }
+    
+        // updating body preferences
+        if (!isNullOrEmpty(bodyPreferences)) {
+            List<DBody> list = new ArrayList<>();
+            for (Object obj : bodyPreferences) {
+                try {
+                    list.add(new DBody(DBody.BodyType.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setBodyPreferences(list);
+        }
+        
+        // updating education preferences
+        if (!isNullOrEmpty(educationPreferences)) {
+            List<DEducation> list = new ArrayList<>();
+            for (Object obj : educationPreferences) {
+                try {
+                    list.add(new DEducation(DEducation.EducationType.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setEducationPreferences(list);
+        }
+
+        // updating eye preferences
+        if (!isNullOrEmpty(eyePreferences)) {
+            List<DEyeColor> list = new ArrayList<>();
+            for (Object obj : eyePreferences) {
+                try {
+                    list.add(new DEyeColor(DEyeColor.EyeColor.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setEyePreferences(list);
+        }
+        
+        // updating hair preferences
+        if (!isNullOrEmpty(hairPreferences)) {
+            List<DHair> list = new ArrayList<>();
+            for (Object obj : hairPreferences) {
+                try {
+                    list.add(new DHair(DHair.HairColor.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setHairPreferences(list);
+        }
+        
+        // updating hair preferences
+        if (!isNullOrEmpty(occupationPreferences)) {
+            List<DOccupation> list = new ArrayList<>();
+            for (Object obj : occupationPreferences) {
+                try {
+                    list.add(new DOccupation(DOccupation.Occupation.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setOccupationPreferences(list);
+        }
+        
+        // updating hair preferences
+        if (!isNullOrEmpty(orientationPreferences)) {
+            List<DOrientation> list = new ArrayList<>();
+            for (Object obj : orientationPreferences) {
+                try {
+                    list.add(new DOrientation(DOrientation.Orientation.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setOrientationPreferences(list);
+        }
+        
+        // updating hair preferences
+        if (!isNullOrEmpty(maritalPreferences)) {
+            List<DMaritalstatus> list = new ArrayList<>();
+            for (Object obj : maritalPreferences) {
+                try {
+                    list.add(new DMaritalstatus(DMaritalstatus.MaritalStatus.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setMaritalPreferences(list);
+        }
+        
+        // updating hair preferences
+        if (!isNullOrEmpty(religionPreferences)) {
+            List<DReligion> list = new ArrayList<>();
+            for (Object obj : religionPreferences) {
+                try {
+                    list.add(new DReligion(DReligion.Religion.valueOf(String.valueOf(obj))));
+                } catch (Exception e) {}
+            }
+            user.getPreferences().setReligionPreferences(list);
+        }
+        
+        try {
+            facade.update(user.getPreferences());
+            FacesContext.getCurrentInstance().addMessage(
+                event.getComponent().getClientId(),
+                new FacesMessage("Zmiany w preferencjach zostły zapisane.")
+            );
+        } catch (Exception e) {
+            System.out.println(e);
+            FacesContext.getCurrentInstance().addMessage(
+                event.getComponent().getClientId(),
+                new FacesMessage(FacesMessage.SEVERITY_WARN, "Wystąpił błąd przy aktualizacji preferencji. Spróbuj ponownie.", null)
+            );
+        }
+        
+    }
+    
+    /**
+     * Checks if the given list is null or empty.
+     * 
+     * @param list
+     * 
+     * @return true if the given list is null or empty, false otherwise.
+     */
+    protected boolean isNullOrEmpty(List list) {
+        return list == null || list.isEmpty();
     }
     
 }

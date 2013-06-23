@@ -45,10 +45,16 @@
       <div class="tab-content">
         <div class="tab-pane" id="profile">
           <h:form id="form-profile" styleClass="form-horizontal">
+            <h:message for="#{saveprofile.clientId}" 
+                       style="display: block;"
+                       infoStyle="display: block;" infoClass="alert alert-info"
+                       warnStyle="display: block;" warnClass="alert"
+                       errorStyle="display: block;" errorClass="alert alert-error"
+                       fatalStyle="display: block;" fatalClass="alert alert-error"/>
             <!-- birth day
             ================================================== -->
             <h:panelGroup id="bd-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Data Urodzenia" styleClass="control-label" for="ubd"/>
+              <h:outputLabel value="Data Urodzenia" styleClass="control-label" for="ubd-day"/>
               <div class="controls controls-row">
                 <h:selectOneMenu id="ubd-day" binding="#{ubdday}" styleClass="span1" value="#{profmgr.day}">
                   <f:selectItem itemLabel="Dzień" itemValue=""/>
@@ -124,7 +130,7 @@
             <h:panelGroup id="edu-pnl" layout="block" styleClass="control-group">
               <h:outputLabel value="Wykształcenie" styleClass="control-label" for="uedu"/>
               <div class="controls">
-                <h:selectOneMenu id="udeu" binding="#{uedu}" styleClass="span2" value="#{profmgr.education}">
+                <h:selectOneMenu id="uedu" binding="#{uedu}" styleClass="span2" value="#{profmgr.education}">
                   <f:selectItem itemLabel="Wybierz" itemValue=""/>
                   <f:selectItems value="#{educationTypes}" var="etype" itemLabel="#{etype.desc}" itemValue="#{etype}"/>
                 </h:selectOneMenu>
@@ -165,8 +171,9 @@
             </h:panelGroup>
             <div class="control-group">
               <div class="controls">
-                <h:commandLink id="saveprofile" styleClass="btn btn-large btn-dejt" value="Zapisz Zmiany">
-                  <f:ajax execute="@form" render="@form" listener="#{profmgr.saveUserProfile}"/>
+                <h:commandLink id="saveprofile" binding="#{saveprofile}" styleClass="btn btn-large btn-dejt" value="Zapisz Zmiany">
+                  <f:ajax execute="@form" render="@form" listener="#{profmgr.saveUserProfile}"
+                          onevent="hideMessage"/>
                 </h:commandLink>
               </div>
             </div>
@@ -178,10 +185,16 @@
         ================================================== -->
         <div class="tab-pane" id="preferences">
           <h:form id="form-preferences" styleClass="form-horizontal">
+            <h:message for="#{saveprefs.clientId}" 
+                       style="display: block;"
+                       infoStyle="display: block;" infoClass="alert alert-info"
+                       warnStyle="display: block;" warnClass="alert"
+                       errorStyle="display: block;" errorClass="alert alert-error"
+                       fatalStyle="display: block;" fatalClass="alert alert-error"/>
             <!-- age range
             ================================================== -->
             <h:panelGroup id="age-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Wiek" styleClass="control-label" for="age"/>
+              <h:outputLabel value="Preferowany Wiek" styleClass="control-label" for="age-low"/>
               <div class="controls controls-row">
                 <h:selectOneMenu id="age-low" binding="#{ageLow}" styleClass="span1" value="#{prefmgr.ageLow}">
                   <f:selectItem itemLabel="Od" itemValue=""/>
@@ -191,6 +204,23 @@
                 <h:selectOneMenu id="age-high" binding="#{ageHigh}" styleClass="span1" value="#{prefmgr.ageHigh}">
                   <f:selectItem itemLabel="Do" itemValue=""/>
                   <f:selectItems value="#{ages}" var="ah" itemLabel="#{ah}" itemValue="#{ah}"/>
+                  <f:selectItem itemLabel="Więcej..." itemValue=""/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- height range
+            ================================================== -->
+            <h:panelGroup id="pheight-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Preferowany Wzrost" styleClass="control-label" for="height-low"/>
+              <div class="controls controls-row">
+                <h:selectOneMenu id="height-low" styleClass="span1" value="#{prefmgr.heightLow}">
+                  <f:selectItem itemLabel="Od" itemValue=""/>
+                  <f:selectItems value="#{heights}" var="hl" itemLabel="#{hl}" itemValue="#{hl}"/>
+                  <f:selectItem itemLabel="Więcej..." itemValue=""/>
+                </h:selectOneMenu>
+                <h:selectOneMenu id="height-high" styleClass="span1" value="#{prefmgr.heightHigh}">
+                  <f:selectItem itemLabel="Do" itemValue=""/>
+                  <f:selectItems value="#{heights}" var="hh" itemLabel="#{hh}" itemValue="#{hh}"/>
                   <f:selectItem itemLabel="Więcej..." itemValue=""/>
                 </h:selectOneMenu>
               </div>
@@ -357,8 +387,10 @@
                 </div>
               </div>
             </div>
-            <h:commandLink id="saveprefs" styleClass="btn btn-large btn-dejt" value="Aktualizuj Preferencje">
-              <f:ajax execute="@form" render="@form" listener="#{prefmgr.saveUserPreferences}"/>
+            <h:commandLink id="saveprefs" binding="#{saveprefs}"
+                           styleClass="btn btn-large btn-dejt" value="Aktualizuj Preferencje">
+              <f:ajax execute="@form" render="@form" listener="#{prefmgr.saveUserPreferences}"
+                      onevent="hideMessage"/>
             </h:commandLink>
           </h:form>
         </div>

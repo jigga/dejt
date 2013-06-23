@@ -4,6 +4,7 @@
  */
 package com.dejt.web.bean;
 
+import com.dejt.common.CRUDFacade;
 import com.dejt.common.model.DBody;
 import com.dejt.common.model.DEducation;
 import com.dejt.common.model.DEyeColor;
@@ -23,6 +24,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Produces;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,14 +39,17 @@ import javax.inject.Named;
 public class ProfileManager implements Serializable {
     
     @Inject
+    private CRUDFacade facade;
+    
+    @Inject
     @LoggedIn
     private User user;
     private Profile profile;
     
-    private int day;
-    private int month;
-    private int year;
-    private int height;
+    private Integer day;
+    private Integer month;
+    private Integer year;
+    private Integer height;
     
     private DOrientation.Orientation orientation;
     private DBody.BodyType bodyType;
@@ -56,53 +62,65 @@ public class ProfileManager implements Serializable {
     
     @PostConstruct
     protected void init() {
+        
         profile = user.getProfile();
         if (profile == null) {
             profile = new Profile(user);
             profile.setCreationTime(new Date());
+        } else {
+            if (profile.getBirthDate() != null) {
+                Calendar birthDay = Calendar.getInstance();
+                birthDay.setTime(profile.getBirthDate());
+                this.day = birthDay.get(Calendar.DATE);
+                this.month = birthDay.get(Calendar.MONTH);
+                this.year = birthDay.get(Calendar.YEAR);
+            }
+            this.height = profile.getHeight();
+            this.orientation = profile.getOrientation() != null ? profile.getOrientation().getOrientation() : null;
+            this.bodyType = profile.getBody()!= null ? profile.getBody().getBodyType() : null;
+            this.eyeColor = profile.getEyeColor() != null ? profile.getEyeColor().getEyeColor() : null;
+            this.hairColor = profile.getHairColor() != null ? profile.getHairColor().getHairColor() : null;
+            this.education = profile.getEducation() != null ? profile.getEducation().getEducationType() : null;
+            this.occupation = profile.getOccupation() != null ? profile.getOccupation().getOccupation() : null;
+            this.maritalStatus = profile.getMaritalStatus()!= null ? profile.getMaritalStatus().getMaritalStatus(): null;
+            this.religion = profile.getReligion()!= null ? profile.getReligion().getReligion(): null;
         }
-        if (profile.getBirthDate() != null) {
-            Calendar birthDay = Calendar.getInstance();
-            birthDay.setTime(profile.getBirthDate());
-            this.day = birthDay.get(Calendar.DATE);
-            this.month = birthDay.get(Calendar.MONTH);
-            this.year = birthDay.get(Calendar.YEAR);
-        }
+        
     }
     
     public Profile getProfile() {
         return user.getProfile();
     }
 
-    public int getDay() {
+    public Integer getDay() {
         return day;
     }
 
-    public void setDay(int day) {
+    public void setDay(Integer day) {
         this.day = day;
     }
 
-    public int getMonth() {
+    public Integer getMonth() {
         return month;
     }
 
-    public void setMonth(int month) {
+    public void setMonth(Integer month) {
         this.month = month;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
-    public int getHeight() {
+    public Integer getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(Integer height) {
         this.height = height;
     }
 
@@ -272,6 +290,53 @@ public class ProfileManager implements Serializable {
     }
     
     public void saveUserProfile(AjaxBehaviorEvent event) {
+        
+        if (day!=null && month!=null && year!=null) {
+            Calendar bd = Calendar.getInstance();
+            bd.set(year, month, day, 0, 0, 0);
+            user.getProfile().setBirthDate(bd.getTime());
+        }
+        if (height!=null) {
+            user.getProfile().setHeight(height);
+        }
+        if (orientation!=null) {
+            user.getProfile().setOrientation(new DOrientation(orientation));
+        }
+        if (bodyType!=null) {
+            user.getProfile().setBody(new DBody(bodyType));
+        }
+        if (eyeColor!=null) {
+            user.getProfile().setEyeColor(new DEyeColor(eyeColor));
+        }
+        if (hairColor!=null) {
+            user.getProfile().setHairColor(new DHair(hairColor));
+        }
+        if (education!=null) {
+            user.getProfile().setEducation(new DEducation(education));
+        }
+        if (occupation!=null) {
+            user.getProfile().setOccupation(new DOccupation(occupation));
+        }
+        if (maritalStatus!=null) {
+            user.getProfile().setMaritalStatus(new DMaritalstatus(maritalStatus));
+        }
+        if (religion!=null) {
+            user.getProfile().setReligion(new DReligion(religion));
+        }
+        
+        try {
+            facade.update(user.getProfile());
+            FacesContext.getCurrentInstance().addMessage(
+                event.getComponent().getClientId(),
+                new FacesMessage("Zmiany w Twoim profilu zostły zapisane.")
+            );
+        } catch (Exception e) {
+            System.out.println(e);
+            FacesContext.getCurrentInstance().addMessage(
+                event.getComponent().getClientId(),
+                new FacesMessage(FacesMessage.SEVERITY_WARN, "Wystąpił błąd przy aktualizacji zmian. Spróbuj ponownie.", null)
+            );
+        }
         
     }
     

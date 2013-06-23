@@ -62,6 +62,14 @@ public class DOccupation implements Serializable {
         this.occupation = occupation;
     }
 
+    public Occupation getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(Occupation occupation) {
+        this.occupation = occupation;
+    }
+    
     @Override
     public String toString() {
         return "com.dejt.model.DOccupation[occupation=" + occupation + "]";

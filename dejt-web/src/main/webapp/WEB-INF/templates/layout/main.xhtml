@@ -157,6 +157,9 @@
       <script>
         $('#tabs a:first').tab('show');
         $('#tabs a').click(function (e) {e.preventDefault(); $(this).tab('show');});
+        function hideMessage(data) {
+          window.setTimeout(function() {$('.alert').remove();}, 10000);
+        }
       </script>
     </h:body>
   </f:view>
