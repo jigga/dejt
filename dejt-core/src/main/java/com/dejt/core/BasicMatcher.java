@@ -8,6 +8,7 @@ import com.dejt.common.model.Preferences;
 import com.dejt.common.model.Profile;
 import com.dejt.common.model.User;
 import java.io.Serializable;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -42,17 +43,31 @@ public class BasicMatcher implements Matcher, Serializable {
      *         false otherwise.
      */
     protected boolean matchProfPref(Profile p, Preferences r){
-        return (r.getBody().contains(p.getBody().toString())                || r.getBody().isEmpty())          &&
-            (r.getEyeColor().contains(p.getEyeColor().toString())           || r.getEyeColor().isEmpty())      &&
-            (r.getHairColor().contains(p.getHairColor().toString())         || r.getHairColor().isEmpty())     &&   
-            (r.getEducation().contains(p.getEducation().toString())         || r.getEducation().isEmpty())     &&
-            (r.getOccupation().contains(p.getOccupation().toString())       || r.getOccupation().isEmpty())    &&
-            (r.getMaritalStatus().contains(p.getMaritalStatus().toString()) || r.getMaritalStatus().isEmpty()) &&
-            (r.getReligion().contains(p.getReligion().toString())           || r.getReligion().isEmpty())      &&
-            (r.getHeightLow() < p.getHeight() && r.getHeightHigh() > p.getHeight()) &&
-            (r.getAgeLow() < p.getAge() && r.getAgeHigh() > p.getAge()) &&
-            r.getOrientation().contains(p.getOrientation().toString()) &&    
+        
+        return
+            isNullOrEmpty(r.getBodyPreferences()) || r.getBodyPreferences().contains(p.getBody())                         &&
+            isNullOrEmpty(r.getEyePreferences()) || r.getEyePreferences().contains(p.getEyeColor())                       &&
+            isNullOrEmpty(r.getHairPreferences()) || r.getHairPreferences().contains(p.getHairColor())                    &&
+            isNullOrEmpty(r.getEducationPreferences()) || r.getEducationPreferences().contains(p.getEducation())          &&
+            isNullOrEmpty(r.getOccupationPreferences()) || r.getOccupationPreferences().contains(p.getOccupation())       &&
+            isNullOrEmpty(r.getMaritalPreferences()) || r.getMaritalPreferences().contains(p.getMaritalStatus())          &&
+            isNullOrEmpty(r.getReligionPreferences()) || r.getReligionPreferences().contains(p.getReligion())             &&
+            isNullOrEmpty(r.getOrientationPreferences()) || r.getOrientationPreferences().contains(p.getOrientation())    &&
+            (r.getHeightLow() < p.getHeight() && r.getHeightHigh() > p.getHeight())                                       &&
+            (r.getAgeLow() < p.getAge() && r.getAgeHigh() > p.getAge())                                                   &&
             r.getGender() == p.getGender();
+        
+    }
+    
+    /**
+     * Checks if the given list is null or empty.
+     * 
+     * @param list
+     * 
+     * @return true if the given list is null or empty, false otherwise.
+     */
+    protected boolean isNullOrEmpty(List list) {
+        return list == null || list.isEmpty();
     }
     
 }
