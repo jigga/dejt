@@ -12,9 +12,9 @@
       <meta name="author" content=""></meta>
 
       <!-- Le styles -->
+      <link href='http://fonts.googleapis.com/css?family=Open+Sans&#38;subset=latin,latin-ext' rel='stylesheet' type='text/css'></link>
       <link href="//dejt.arkadiuszg.pl/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"></link>
       <link href="//dejt.arkadiuszg.pl/assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
-      <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'></link>
       <style type="text/css">
         body {
           padding-top: 60px;
@@ -25,6 +25,49 @@
           padding: 9px 0;
         }
 
+        select[size] {height: 30px;}
+
+        a {color: #F28400;}
+        .nav-list>.active>a, .nav-list>.active>a:hover, .nav-list>.active>a:focus {
+          color: #fff; background-color: #F28400;
+        }
+        
+        .btn-dejt.active,
+        .btn-warning.active,
+        .btn-danger.active,
+        .btn-success.active,
+        .btn-info.active,
+        .btn-inverse.active {color: rgba(255, 255, 255, 0.75);}
+
+        .btn-dejt {
+          color: #ffffff;
+          text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+          background-color: #F6A94D;
+          *background-color: #F28400;
+          background-image: -moz-linear-gradient(top, #F6A94D, #F28400);
+          background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#F6A94D), to(#F28400));
+          background-image: -webkit-linear-gradient(top, #F6A94D, #F28400);
+          background-image: -o-linear-gradient(top, #F6A94D, #F28400);
+          background-image: linear-gradient(to bottom, #F6A94D, #F28400);
+          background-repeat: repeat-x;
+          border-color: #0044cc #0044cc #002a80;
+          border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+          filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6A94D', endColorstr='#F28400', GradientType=0);
+          filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+        }
+
+        .btn-dejt:hover,
+        .btn-dejt:focus,
+        .btn-dejt:active,
+        .btn-dejt.active,
+        .btn-dejt.disabled,
+        .btn-dejt[disabled] {color: #ffffff; background-color: #F28400; *background-color: #F28400;}
+
+        .btn-dejt:active,
+        .btn-dejt.active {
+          background-color: #F28400 \9;
+        }
+        
         @media (max-width: 980px) {
           /* Enable use of floated navbar text */
           .navbar-text.pull-right {
@@ -101,7 +144,7 @@
         <hr/>
 
         <footer>
-          <p>&#169; Company 2013</p>
+          <p>&#169; Dejt 2013</p>
         </footer>
 
       </div><!--/.fluid-container-->
@@ -111,7 +154,10 @@
       <!-- Placed at the end of the document so the pages load faster -->
       <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
       <script src="//dejt.arkadiuszg.pl/assets/bootstrap/js/bootstrap.min.js"></script>
-
+      <script>
+        $('#tabs a:first').tab('show');
+        $('#tabs a').click(function (e) {e.preventDefault(); $(this).tab('show');});
+      </script>
     </h:body>
   </f:view>
 </html>

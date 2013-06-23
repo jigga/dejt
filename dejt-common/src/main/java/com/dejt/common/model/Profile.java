@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -40,16 +42,15 @@ public class Profile implements Serializable {
     
     @Basic(optional = false)
     @Column(name = "Gender")
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     
-    @Basic(optional = false)
     @Column(name = "BirthDate")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
     
-    @Basic(optional = false)
     @Column(name = "Height")
-    private short height;
+    private Integer height;
     
     @Basic(optional = false)
     @Column(name = "CreationTime")
@@ -142,11 +143,11 @@ public class Profile implements Serializable {
         this.gender = gender;
     }
 
-    public short getHeight() {
+    public Integer getHeight() {
         return height;
     }
 
-    public void setHeight(short height) {
+    public void setHeight(Integer height) {
         this.height = height;
     }
     

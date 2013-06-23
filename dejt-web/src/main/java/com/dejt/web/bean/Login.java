@@ -9,6 +9,7 @@ import com.dejt.common.model.User;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -36,12 +37,25 @@ public class Login implements Serializable {
     // User entity - initialized after successful login
     private User user;
     
+    // redirection target
+    private String target;
+    
     public boolean isLoggedIn() {
         return user != null;
     }
-
+    
+    @Produces
+    @LoggedIn
     public User getUser() {
         return user;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
     
     /**

@@ -5,6 +5,9 @@
 package com.dejt.web.bean;
 
 import com.dejt.common.CRUDFacade;
+import com.dejt.common.model.Gender;
+import com.dejt.common.model.Preferences;
+import com.dejt.common.model.Profile;
 import com.dejt.common.model.User;
 import com.dejt.common.spi.orange.OrangeProxy;
 import java.io.Serializable;
@@ -16,6 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,6 +56,8 @@ public class Registrar implements Serializable {
     protected void init() {
         System.out.println("Registrar;init");
         this.user = new User();
+        this.user.setProfile(new Profile(user));
+        
     }
     
     public User getUser() {
@@ -91,11 +98,24 @@ public class Registrar implements Serializable {
     
     public void registerBtnClicked(AjaxBehaviorEvent event) {
         
-        System.out.println("Registrar;registerBtnClicked;gender=" + gender);
+        ExternalContext ctx = 
+            FacesContext.getCurrentInstance().getExternalContext();
         
+        // Setting user's gender - this could probably be done much better :)
+        String male = 
+            ctx.getRequestParameterMap().get("registration:male");
+        String female = 
+            ctx.getRequestParameterMap().get("registration:female");
+        if (male==null && female==null) {
+            return;
+        } else {
+            user.getProfile().setGender(male!=null ? Gender.M : Gender.F);
+        }
+        
+        // Setting user's password
         try {
             user.setPassword(hashPassword(user.getPassword()));
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             return;
         }
         
@@ -129,7 +149,12 @@ public class Registrar implements Serializable {
 //        }
         
         try {
-            user.setCreationTime(new Date());
+            Date creationDate = new Date();
+            user.setCreationTime(creationDate);
+            user.getProfile().setCreationTime(creationDate);
+            Preferences preferences = new Preferences(user);
+            preferences.setCreationTime(creationDate);
+            user.setPreferences(preferences);
             facade.create(user);
             registered = true;
         } catch (Exception e) {

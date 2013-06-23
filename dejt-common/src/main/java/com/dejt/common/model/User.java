@@ -110,6 +110,10 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
     
+    @Column(name = "FirstLogin")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date firstLogin;
+    
     @Transient
     private Msisdn msisdn;
     
@@ -319,6 +323,14 @@ public class User implements Serializable {
 
     public void setCurrentLocation(GlobalPosition currentLocation) {
         this.currentLocation = currentLocation;
+    }
+
+    public Date getFirstLogin() {
+        return firstLogin;
+    }
+
+    public void setFirstLogin(Date firstLogin) {
+        this.firstLogin = firstLogin;
     }
     
     @Override

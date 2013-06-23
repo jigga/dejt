@@ -2,7 +2,10 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition template="/WEB-INF/templates/layout/main.xhtml"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets">
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
   
   <ui:define name="sidebar">
     <div class="well sidebar-nav">
@@ -28,12 +31,341 @@
   </ui:define>
   
   <ui:define name="content">
-    <div class="hero-unit">
-      <h1>Hello, world!</h1>
+    <h:panelGroup id="hero-welcome" layout="block" styleClass="hero-unit" rendered="#{empty login.user.firstLogin}">
+      <h1>Witaj, #{login.user.name}!</h1>
       <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-      <p><a href="#" class="btn btn-primary btn-large">Learn more &#187;</a></p>
+      <p><a href="#" class="btn btn-dejt btn-large">Dowiedz się więcej &#187;</a></p>
+    </h:panelGroup>
+    
+    <div class="tabbable">
+      <ul id="tabs" class="nav nav-tabs">
+        <li><a href="#profile" data-toggle="tab">Twój Profil</a></li>
+        <li><a href="#preferences" data-toggle="tab">Twoje Preferencje</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane" id="profile">
+          <h:form id="form-profile" styleClass="form-horizontal">
+            <!-- birth day
+            ================================================== -->
+            <h:panelGroup id="bd-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Data Urodzenia" styleClass="control-label" for="ubd"/>
+              <div class="controls controls-row">
+                <h:selectOneMenu id="ubd-day" binding="#{ubdday}" styleClass="span1" value="#{profmgr.day}">
+                  <f:selectItem itemLabel="Dzień" itemValue=""/>
+                  <f:selectItems value="#{days}" var="day" itemLabel="#{day}" itemValue="#{day}"/>
+                </h:selectOneMenu>
+                <h:selectOneMenu id="ubd-month" binding="#{ubdmonth}" styleClass="span1" value="#{profmgr.month}">
+                  <f:selectItem itemLabel="Miesiąc" itemValue=""/>
+                  <f:selectItems value="#{months}" var="month" itemLabel="#{month}" itemValue="#{month}"/>
+                </h:selectOneMenu>
+                <h:selectOneMenu id="ubd-year" binding="#{ubdyear}" styleClass="span1" value="#{profmgr.year}">
+                  <f:selectItem itemLabel="Rok" itemValue=""/>
+                  <f:selectItems value="#{years}" var="year" itemLabel="#{year}" itemValue="#{year}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- height
+            ================================================== -->
+            <h:panelGroup id="uheight-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Wzrost" styleClass="control-label" for="uheight"/>
+              <div class="controls">
+                <h:selectOneMenu id="uheight" binding="#{uheight}" styleClass="span1" value="#{profmgr.height}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{heights}" var="height" itemLabel="#{height}" itemValue="#{height}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- orientation
+            ================================================== -->
+            <h:panelGroup id="orientation-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Orientacja" styleClass="control-label" for="orientation"/>
+              <div class="controls">
+                <h:selectOneMenu id="orientation" binding="#{orientation}" styleClass="span2" value="#{profmgr.orientation}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{orientationValues}" var="ov" itemLabel="#{ov.desc}" itemValue="#{ov}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- body
+            ================================================== -->
+            <h:panelGroup id="ufit-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Sylwetka" styleClass="control-label" for="ufit"/>
+              <div class="controls">
+                <h:selectOneMenu id="ufit" binding="#{ufit}" styleClass="span2" value="#{profmgr.bodyType}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{bodyTypes}" var="bt" itemLabel="#{bt.desc}" itemValue="#{bt}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- eye color
+            ================================================== -->
+            <h:panelGroup id="ueyes-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Kolor Oczu" styleClass="control-label" for="ueyes"/>
+              <div class="controls">
+                <h:selectOneMenu id="ueyes" binding="#{ueyes}" styleClass="span2" value="#{profmgr.eyeColor}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{eyeColors}" var="eyec" itemLabel="#{eyec.desc}" itemValue="#{eyec}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- hair color
+            ================================================== -->
+            <h:panelGroup id="uhair-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Kolor Włosów" styleClass="control-label" for="uhair"/>
+              <div class="controls">
+                <h:selectOneMenu id="uhair" binding="#{uhair}" styleClass="span2" value="#{profmgr.hairColor}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{hairColors}" var="hairc" itemLabel="#{hairc.desc}" itemValue="#{hairc}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- education
+            ================================================== -->
+            <h:panelGroup id="edu-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Wykształcenie" styleClass="control-label" for="uedu"/>
+              <div class="controls">
+                <h:selectOneMenu id="udeu" binding="#{uedu}" styleClass="span2" value="#{profmgr.education}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{educationTypes}" var="etype" itemLabel="#{etype.desc}" itemValue="#{etype}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- occupation
+            ================================================== -->
+            <h:panelGroup id="occupation-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Zawód" styleClass="control-label" for="occupation"/>
+              <div class="controls">
+                <h:selectOneMenu id="occupation" binding="#{occupation}" styleClass="span2" value="#{profmgr.occupation}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{occupationTypes}" var="occtype" itemLabel="#{occtype.desc}" itemValue="#{occtype}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- marital status
+            ================================================== -->
+            <h:panelGroup id="marital-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Stan Cywilny" styleClass="control-label" for="marital"/>
+              <div class="controls">
+                <h:selectOneMenu id="marital" binding="#{marital}" styleClass="span2" value="#{profmgr.maritalStatus}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{maritalStatuses}" var="marstat" itemLabel="#{marstat.desc}" itemValue="#{marstat}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- religion
+            ================================================== -->
+            <h:panelGroup id="religion-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Wyznanie" styleClass="control-label" for="religion"/>
+              <div class="controls">
+                <h:selectOneMenu id="religion" binding="#{religion}" styleClass="span2" value="#{profmgr.religion}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItems value="#{religions}" var="rel" itemLabel="#{rel.desc}" itemValue="#{rel}"/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <div class="control-group">
+              <div class="controls">
+                <h:commandLink id="saveprofile" styleClass="btn btn-large btn-dejt" value="Zapisz Zmiany">
+                  <f:ajax execute="@form" render="@form" listener="#{profmgr.saveUserProfile}"/>
+                </h:commandLink>
+              </div>
+            </div>
+          </h:form>
+        </div>
+        
+        
+        <!-- preferences tab
+        ================================================== -->
+        <div class="tab-pane" id="preferences">
+          <h:form id="form-preferences" styleClass="form-horizontal">
+            <!-- age range
+            ================================================== -->
+            <h:panelGroup id="age-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Wiek" styleClass="control-label" for="age"/>
+              <div class="controls controls-row">
+                <h:selectOneMenu id="age-low" binding="#{ageLow}" styleClass="span1" value="#{prefmgr.ageLow}">
+                  <f:selectItem itemLabel="Od" itemValue=""/>
+                  <f:selectItems value="#{ages}" var="al" itemLabel="#{al}" itemValue="#{al}"/>
+                  <f:selectItem itemLabel="Więcej..." itemValue=""/>
+                </h:selectOneMenu>
+                <h:selectOneMenu id="age-high" binding="#{ageHigh}" styleClass="span1" value="#{prefmgr.ageHigh}">
+                  <f:selectItem itemLabel="Do" itemValue=""/>
+                  <f:selectItems value="#{ages}" var="ah" itemLabel="#{ah}" itemValue="#{ah}"/>
+                  <f:selectItem itemLabel="Więcej..." itemValue=""/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            <!-- gender
+            ================================================== -->
+            <h:panelGroup id="gender-pnl" layout="block" styleClass="control-group">
+              <h:outputLabel value="Płeć" styleClass="control-label" for="gender"/>
+              <div class="controls">
+                <h:selectOneMenu id="gender" binding="#{gender}" styleClass="span2" value="#{prefmgr.gender}">
+                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                  <f:selectItem itemLabel="Kobieta" itemValue="F"/>
+                  <f:selectItem itemLabel="Mężczyzna" itemValue="M"/>
+                  <f:selectItem itemLabel="Bez Znaczenia" itemValue=""/>
+                </h:selectOneMenu>
+              </div>
+            </h:panelGroup>
+            
+            <!-- preferences accordion
+              ================================================== -->
+            <div class="accordion" id="accordion">
+              <!-- orientation preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#preforient">Preferowana Orientacja</a>
+                </div>
+                <div id="preforient" class="accordion-body collapse in">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.orientationPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{orientationValues}" var="ov2" itemLabel="#{ov2.desc}" itemValue="#{ov2}"/>
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- body preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#preffit">Preferowana Sylwetka</a>
+                </div>
+                <div id="preffit" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.bodyPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                        <f:selectItems value="#{bodyTypes}" var="bt2" itemLabel="#{bt2.desc}" itemValue="#{bt2}" />
+                      </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- education preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefedu">Preferencje Edukacyjne</a>
+                </div>
+                <div id="prefedu" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.educationPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{educationTypes}" var="etype2" itemLabel="#{etype2.desc}" itemValue="#{etype2}" />
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- eye preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefeyes">Ach te czarne oczy ;)</a>
+                </div>
+                <div id="prefeyes" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.eyePreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{eyeColors}" var="eyec2" itemLabel="#{eyec2.desc}" itemValue="#{eyec2}" />
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- hair preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefhair">Preferowane włosy</a>
+                </div>
+                <div id="prefhair" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.hairPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{hairColors}" var="hairc2" itemLabel="#{hairc2.desc}" itemValue="#{hairc2}"/>
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- occupation preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefoccup">Preferowany Zawód</a>
+                </div>
+                <div id="prefoccup" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.occupationPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{occupationTypes}" var="occtype2" itemLabel="#{occtype2.desc}" itemValue="#{occtype2}"/>
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- marital preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefmarital">Preferowany Stan Cywilny</a>
+                </div>
+                <div id="prefmarital" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.maritalPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{maritalStatuses}" var="marstat2" itemLabel="#{marstat2.desc}" itemValue="#{marstat2}"/>
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- marital preferences
+              ================================================== -->
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#prefreligion">Preferencje Wyznaniowe</a>
+                </div>
+                <div id="prefreligion" class="accordion-body collapse">
+                  <div class="accordion-inner">
+                    <div class="row-fluid">
+                      <div class="span11 offset1">
+                        <h:selectManyCheckbox value="#{prefmgr.religionPreferences}" layout="pageDirection" styleClass="checkbox inline">
+                          <f:selectItems value="#{religions}" var="rel2" itemLabel="#{rel2.desc}" itemValue="#{rel2}"/>
+                        </h:selectManyCheckbox>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h:commandLink id="saveprefs" styleClass="btn btn-large btn-dejt" value="Aktualizuj Preferencje">
+              <f:ajax execute="@form" render="@form" listener="#{prefmgr.saveUserPreferences}"/>
+            </h:commandLink>
+          </h:form>
+        </div>
+      </div>
     </div>
-    <div class="row-fluid">
+    
+    <div class="row-fluid hide">
       <div class="span4">
         <h2>Heading</h2>
         <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
@@ -50,7 +382,7 @@
         <p><a class="btn" href="#">View details &#187;</a></p>
       </div><!--/span-->
     </div><!--/row-->
-    <div class="row-fluid">
+    <div class="row-fluid hide">
       <div class="span4">
         <h2>Heading</h2>
         <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>

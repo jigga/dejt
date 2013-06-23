@@ -17,5 +17,5 @@ public class DejtApplication extends ResourceConfig {
     public DejtApplication() {
         packages("com.dejt.web.api");
     }
-    
+
 }
