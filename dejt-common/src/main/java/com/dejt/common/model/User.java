@@ -7,7 +7,6 @@ package com.dejt.common.model;
 import com.dejt.common.ISOCountry;
 import com.dejt.common.Msisdn;
 import java.io.Serializable;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -325,28 +324,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "com.dejt.model.User[ uid=" + uid + " ]";
-    }
-    
-    public static void main(String[] args) {
-        System.out.println(sha256("mojehaslo"));
-    }
-    
-    public static String sha256(String base) {
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if(hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-        } catch(Exception ex){
-           throw new RuntimeException(ex);
-        }
     }
     
 }
