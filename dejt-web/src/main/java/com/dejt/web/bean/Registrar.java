@@ -8,6 +8,9 @@ import com.dejt.common.CRUDFacade;
 import com.dejt.common.model.User;
 import com.dejt.common.spi.orange.OrangeProxy;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -89,23 +92,26 @@ public class Registrar implements Serializable {
     public void registerBtnClicked(AjaxBehaviorEvent event) {
         
         System.out.println("Registrar;registerBtnClicked;gender=" + gender);
-        System.out.println("Registrar;registerBtnClicked;gender=" + gender);
+        
+        try {
+            user.setPassword(hashPassword(user.getPassword()));
+        } catch (Exception e) {
+            return;
+        }
         
         if (conversation.isTransient()) {
             conversation.begin();
             cid = conversation.getId();
-            System.out.println("Registrar;registerBtnClicked;cid=" + cid);
         }
         
         confirmationCode = String.valueOf(System.currentTimeMillis());
-        System.out.println("Registrar;registerBtnClicked;confirmationCode=" + confirmationCode);
         try {
             proxy.sendSMS(user.getMsisdn(), user.getMsisdn(), confirmationCode);
         } catch (Exception e) {
             System.out.println(e);
         } finally {
+            // TODO: move below statement to the try block.
             codeSent = true;
-            System.out.println("Registrar;registerBtnClicked;confirmationCode=" + confirmationCode);
         }
         
     }
@@ -129,6 +135,38 @@ public class Registrar implements Serializable {
         } catch (Exception e) {
             
         }
+        
+    }
+    
+    /**
+     * Creates password hash using SHA-256 algorithm and converts this hash
+     * to hex string.
+     * 
+     * @param cleartext
+     * 
+     * @return
+     * 
+     * @throws NoSuchAlgorithmException If SHA-256 is not supported by VM.
+     * @throws UnsupportedEncodingException If UTF-8 encoding is not supported
+     *         on the deployment platform.
+     */
+    protected String hashPassword(String cleartext) 
+        throws NoSuchAlgorithmException,
+               UnsupportedEncodingException {
+        
+        MessageDigest digest = 
+            MessageDigest.getInstance("SHA-256");
+        byte[] hash = 
+            digest.digest(cleartext.getBytes("UTF-8"));
+        
+        StringBuilder hexString = new StringBuilder();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+
+        return hexString.toString();
         
     }
     
