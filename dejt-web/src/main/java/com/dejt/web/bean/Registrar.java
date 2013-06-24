@@ -19,8 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +33,8 @@ import javax.inject.Named;
 @ConversationScoped
 public class Registrar implements Serializable {
     
+    private static final long serialVersionUID = -5757450411257036421L;
+    
     @Inject
     private Conversation conversation;
     
@@ -46,7 +46,7 @@ public class Registrar implements Serializable {
     
     private String cid;
     private User user;
-    private String gender;
+    private Gender gender;
     private boolean codeSent;
     private boolean registered;
     private String confirmationCode;
@@ -68,11 +68,11 @@ public class Registrar implements Serializable {
         this.user = user;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
     
@@ -98,18 +98,11 @@ public class Registrar implements Serializable {
     
     public void registerBtnClicked(AjaxBehaviorEvent event) {
         
-        ExternalContext ctx = 
-            FacesContext.getCurrentInstance().getExternalContext();
-        
         // Setting user's gender - this could probably be done much better :)
-        String male = 
-            ctx.getRequestParameterMap().get("registration:male");
-        String female = 
-            ctx.getRequestParameterMap().get("registration:female");
-        if (male==null && female==null) {
+        if (gender==null) {
             return;
         } else {
-            user.getProfile().setGender(male!=null ? Gender.M : Gender.F);
+            user.getProfile().setGender(gender);
         }
         
         // Setting user's password
@@ -119,11 +112,13 @@ public class Registrar implements Serializable {
             return;
         }
         
+        // starting the conversation...
         if (conversation.isTransient()) {
             conversation.begin();
             cid = conversation.getId();
         }
         
+        // and lastly - generating and sending the confirmation code...
         confirmationCode = String.valueOf(System.currentTimeMillis());
         try {
             proxy.sendSMS(user.getMsisdn(), user.getMsisdn(), confirmationCode);
@@ -158,7 +153,7 @@ public class Registrar implements Serializable {
             facade.create(user);
             registered = true;
         } catch (Exception e) {
-            
+            // TODO: add faces message...
         }
         
     }
