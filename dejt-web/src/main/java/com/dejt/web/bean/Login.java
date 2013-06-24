@@ -105,6 +105,7 @@ public class Login implements Serializable {
         HttpServletRequest request = 
             (HttpServletRequest)context.getRequest();
         request.logout();
+        context.invalidateSession();
         user = null;
         context.redirect("/index.xhtml");
         

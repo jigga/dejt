@@ -60,10 +60,10 @@ public class CoreScheduler implements Serializable {
             .createNamedQuery("User.findByActiveFlag", User.class)
             .setParameter("active", Boolean.TRUE)
             .getResultList();
+        System.out.println("CoreScheduler;schedule;active users list=" + activeUsers);
 
         //set users locations        
         for (User u: activeUsers){
-            
             try {
                 LocationOutput location = 
                     proxy.getLocation(u.getMsisdn());
@@ -92,6 +92,7 @@ public class CoreScheduler implements Serializable {
                         .getEllipsoidalDistance();
                 
                 if (distance < 500 && matcher.matchUsers(activeUsers.get(i), activeUsers.get(j))) {
+                    System.out.println("CoreScheduler;schedule;adding users: " + activeUsers.get(i) + ", " + activeUsers.get(j) + " to the closePairsList");
                     closePairsList.add(new UserPair(activeUsers.get(i), activeUsers.get(j)));
                 }
             }    
