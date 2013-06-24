@@ -29,6 +29,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -38,6 +39,8 @@ import javax.inject.Named;
 @SessionScoped
 public class ProfileManager implements Serializable {
     
+    private static final long serialVersionUID = -4389893235046227693L;
+    
     @Inject
     private CRUDFacade facade;
     
@@ -45,6 +48,9 @@ public class ProfileManager implements Serializable {
     @LoggedIn
     private User user;
     private Profile profile;
+    
+    // profile picture
+    private Part profilePhoto;
     
     private Integer day;
     private Integer month;
@@ -60,6 +66,10 @@ public class ProfileManager implements Serializable {
     private DMaritalstatus.MaritalStatus maritalStatus;
     private DReligion.Religion religion;
     
+    /**
+     * Initialization method. Rewrites {@link Profile profile's} properties
+     * into this bean properties.
+     */
     @PostConstruct
     protected void init() {
         
@@ -86,6 +96,14 @@ public class ProfileManager implements Serializable {
             this.religion = profile.getReligion()!= null ? profile.getReligion().getReligion(): null;
         }
         
+    }
+
+    public Part getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(Part profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
     
     public Profile getProfile() {
@@ -289,6 +307,11 @@ public class ProfileManager implements Serializable {
         return Arrays.asList(DReligion.Religion.values());
     }
     
+    /**
+     * TODO: DOCUMENT ME!!!
+     * 
+     * @param event 
+     */
     public void saveUserProfile(AjaxBehaviorEvent event) {
         
         if (day!=null && month!=null && year!=null) {
@@ -339,5 +362,10 @@ public class ProfileManager implements Serializable {
         }
         
     }
+    
+    /**
+     * Handles profile photo upload requests.
+     */
+    public void uploadProfilePhoto() {}
     
 }

@@ -5,9 +5,12 @@
 package com.dejt.web.api;
 
 import com.dejt.common.CRUDFacade;
+import com.dejt.common.model.Picture;
 import com.dejt.common.model.Preferences;
 import com.dejt.common.model.Profile;
 import com.dejt.common.model.User;
+import java.io.File;
+import java.text.MessageFormat;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -25,8 +28,14 @@ import javax.ws.rs.core.Response;
 @Path("/users")
 public class UsersAPI {
     
+    /**
+     * {0} shall be replaced by {@link User#getUid() user's identifier}.
+     * {1} shall be replaced by {@link Picture#getId() photo's identifier}.
+     */
+    protected static final String BASE_URI_USER_PHOTO = "/upload/dejt/{0}/{1}";
+    
     @Inject
-    CRUDFacade facade;
+    protected CRUDFacade facade;
     
     /**
      * Gets user entity.
@@ -89,6 +98,33 @@ public class UsersAPI {
                 .build();
         }
         return Response.ok(preferences).build();
+        
+    }
+    
+    /**
+     * Gets user's photo.
+     * 
+     * @param uid User's identifier.
+     * @param pid Photo's identifier.
+     * 
+     * @return User's photo.
+     */
+    @GET
+    @Path("/{uid}/photos/{pid}")
+    public Response getUserPhoto(@PathParam("uid") String uid, @PathParam("pid") String pid) {
+        
+        try {
+            File photo = 
+                new File(MessageFormat.format(BASE_URI_USER_PHOTO, uid, pid));
+            if (!photo.exists()) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(photo, "image/*")
+                .header("Content-Disposition", "inline;filename=" + photo.getName())
+                .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
         
     }
     

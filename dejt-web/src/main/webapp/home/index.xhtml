@@ -41,9 +41,23 @@
       <ul id="tabs" class="nav nav-tabs">
         <li><a href="#profile" data-toggle="tab">Twój Profil</a></li>
         <li><a href="#preferences" data-toggle="tab">Twoje Preferencje</a></li>
+        <li><a href="#albums" data-toggle="tab">Twoje Albumy</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane" id="profile">
+          <h:form id="form-photo" enctype="multipart/form-data">
+            <h:message for="btn-upload" 
+                       style="display: block;"
+                       infoStyle="display: block;" infoClass="alert alert-info"
+                       warnStyle="display: block;" warnClass="alert"
+                       errorStyle="display: block;" errorClass="alert alert-error"
+                       fatalStyle="display: block;" fatalClass="alert alert-error"/>
+            <h:inputFile id="photo" value="#{profmgr.profilePhoto}"/>
+            <h:commandButton id="btn-upload" value="Upload" action="#{profmgr.uploadProfilePhoto}"
+                             styleClass="btn btn-dejt">
+              <f:ajax execute="photo" render="@form"/>
+            </h:commandButton>
+          </h:form>
           <h:form id="form-profile" styleClass="form-horizontal">
             <h:message for="#{saveprofile.clientId}" 
                        style="display: block;"
@@ -179,7 +193,6 @@
             </div>
           </h:form>
         </div>
-        
         
         <!-- preferences tab
         ================================================== -->
@@ -393,6 +406,11 @@
                       onevent="hideMessage"/>
             </h:commandLink>
           </h:form>
+        </div>
+        
+        <!-- photo ablbums tab
+        ================================================== -->
+        <div class="tab-pane" id="albums">
         </div>
       </div>
     </div>
