@@ -45,163 +45,182 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane" id="profile">
-          <div class="fileupload fileupload-new" data-provides="fileupload">
-            <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-              <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&#38;text=no+image" />
+          <div class="row-fluid">
+            <div class="span5 offset1">
+              <h3>Zdjęcie Profilowe</h3>
+              <h:form id="form-photo" enctype="multipart/form-data">
+                <h:message for="btn-upload" 
+                           style="display: block;"
+                           infoStyle="display: block;" infoClass="alert alert-info"
+                           warnStyle="display: block;" warnClass="alert"
+                           errorStyle="display: block;" errorClass="alert alert-error"
+                           fatalStyle="display: block;" fatalClass="alert alert-error"/>
+                <ul class="thumbnails">
+                  <li class="span8">
+                    <div class="thumbnail">
+                      <ui:fragment rendered="#{empty profmgr.user.profilePicture}">
+                        <img src="//www.placehold.it/200x150/EFEFEF/AAAAAA&#38;text=no+image"
+                             style="width: 100%;"/>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{!empty profmgr.user.profilePicture}">
+                        <img src="/api/users/#{profmgr.user.uid}/photos/#{profmgr.user.profilePicture}"
+                             style="width: 100%;"/>
+                      </ui:fragment>
+                    </div>
+                  </li>
+                </ul>
+                <h:inputFile id="photo" binding="#{photo}" value="#{profmgr.profilePhoto}" class="hide"
+                             onchange="var p=$(this).val(); var lio=p.lastIndexOf('\\'); if (lio === -1) {lio = p.lastIndexOf('/');} p = p.substring(lio+1); $('input[id=&quot;path&quot;]').val(p);"/>
+                <div class="input-append">
+                  <input id="path" class="span10" type="text"/>
+                  <a href="#" class="btn btn-dejt"
+                     onclick="$('input[id=&quot;#{photo.clientId}&quot;]').click(); return false;">Wybierz</a>
+                  <h:commandButton id="btn-upload" value="Wyślij" styleClass="btn btn-dejt">
+                    <f:ajax execute="photo" render="@form" listener="#{profmgr.uploadProfilePhoto}"
+                            onevent="hideMessage"/>
+                  </h:commandButton>
+                </div>
+                
+              </h:form>
             </div>
-            <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
-            <div>
-              <span class="btn btn-file"><span class="fileupload-new">Select image</span><span class="fileupload-exists">Change</span><input type="file" /></span>
-              <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+            <div class="span6">
+              <h3 style="margin-left: 180px;">Profil</h3>
+              <h:form id="form-profile" styleClass="form-horizontal">
+                <h:message for="#{saveprofile.clientId}" 
+                           style="display: block;"
+                           infoStyle="display: block;" infoClass="alert alert-info"
+                           warnStyle="display: block;" warnClass="alert"
+                           errorStyle="display: block;" errorClass="alert alert-error"
+                           fatalStyle="display: block;" fatalClass="alert alert-error"/>
+                <!-- birth day
+                ================================================== -->
+                <h:panelGroup id="bd-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Data Urodzenia" styleClass="control-label" for="ubd-day"/>
+                  <div class="controls controls-row">
+                    <h:selectOneMenu id="ubd-day" binding="#{ubdday}" styleClass="input input-mini" style="margin-right: 7px;" value="#{profmgr.day}">
+                      <f:selectItem itemLabel="Dzień" itemValue=""/>
+                      <f:selectItems value="#{days}" var="day" itemLabel="#{day}" itemValue="#{day}"/>
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="ubd-month" binding="#{ubdmonth}" styleClass="input input-mini" style="margin-right: 7px;" value="#{profmgr.month}">
+                      <f:selectItem itemLabel="Miesiąc" itemValue=""/>
+                      <f:selectItems value="#{months}" var="month" itemLabel="#{month}" itemValue="#{month}"/>
+                    </h:selectOneMenu>
+                    <h:selectOneMenu id="ubd-year" binding="#{ubdyear}" styleClass="input input-mini" style="margin-right: 7px;" value="#{profmgr.year}">
+                      <f:selectItem itemLabel="Rok" itemValue=""/>
+                      <f:selectItems value="#{years}" var="year" itemLabel="#{year}" itemValue="#{year}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- height
+                ================================================== -->
+                <h:panelGroup id="uheight-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Wzrost" styleClass="control-label" for="uheight"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="uheight" binding="#{uheight}" styleClass="input-mini" value="#{profmgr.height}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{heights}" var="height" itemLabel="#{height}" itemValue="#{height}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- orientation
+                ================================================== -->
+                <h:panelGroup id="orientation-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Orientacja" styleClass="control-label" for="orientation"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="orientation" binding="#{orientation}" styleClass="input" value="#{profmgr.orientation}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{orientationValues}" var="ov" itemLabel="#{ov.desc}" itemValue="#{ov}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- body
+                ================================================== -->
+                <h:panelGroup id="ufit-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Sylwetka" styleClass="control-label" for="ufit"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="ufit" binding="#{ufit}" styleClass="input" value="#{profmgr.bodyType}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{bodyTypes}" var="bt" itemLabel="#{bt.desc}" itemValue="#{bt}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- eye color
+                ================================================== -->
+                <h:panelGroup id="ueyes-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Kolor Oczu" styleClass="control-label" for="ueyes"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="ueyes" binding="#{ueyes}" styleClass="input" value="#{profmgr.eyeColor}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{eyeColors}" var="eyec" itemLabel="#{eyec.desc}" itemValue="#{eyec}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- hair color
+                ================================================== -->
+                <h:panelGroup id="uhair-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Kolor Włosów" styleClass="control-label" for="uhair"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="uhair" binding="#{uhair}" styleClass="input" value="#{profmgr.hairColor}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{hairColors}" var="hairc" itemLabel="#{hairc.desc}" itemValue="#{hairc}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- education
+                ================================================== -->
+                <h:panelGroup id="edu-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Wykształcenie" styleClass="control-label" for="uedu"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="uedu" binding="#{uedu}" styleClass="input" value="#{profmgr.education}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{educationTypes}" var="etype" itemLabel="#{etype.desc}" itemValue="#{etype}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- occupation
+                ================================================== -->
+                <h:panelGroup id="occupation-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Zawód" styleClass="control-label" for="occupation"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="occupation" binding="#{occupation}" styleClass="input" value="#{profmgr.occupation}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{occupationTypes}" var="occtype" itemLabel="#{occtype.desc}" itemValue="#{occtype}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- marital status
+                ================================================== -->
+                <h:panelGroup id="marital-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Stan Cywilny" styleClass="control-label" for="marital"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="marital" binding="#{marital}" styleClass="input" value="#{profmgr.maritalStatus}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{maritalStatuses}" var="marstat" itemLabel="#{marstat.desc}" itemValue="#{marstat}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <!-- religion
+                ================================================== -->
+                <h:panelGroup id="religion-pnl" layout="block" styleClass="control-group">
+                  <h:outputLabel value="Wyznanie" styleClass="control-label" for="religion"/>
+                  <div class="controls">
+                    <h:selectOneMenu id="religion" binding="#{religion}" styleClass="input" value="#{profmgr.religion}">
+                      <f:selectItem itemLabel="Wybierz" itemValue=""/>
+                      <f:selectItems value="#{religions}" var="rel" itemLabel="#{rel.desc}" itemValue="#{rel}"/>
+                    </h:selectOneMenu>
+                  </div>
+                </h:panelGroup>
+                <div class="control-group">
+                  <div class="controls">
+                    <h:commandLink id="saveprofile" binding="#{saveprofile}" styleClass="btn btn-large btn-dejt" value="Zapisz Zmiany">
+                      <f:ajax execute="@form" render="@form" listener="#{profmgr.saveUserProfile}"
+                              onevent="hideMessage"/>
+                    </h:commandLink>
+                  </div>
+                </div>
+              </h:form>
             </div>
           </div>
-          <h:form id="form-photo" enctype="multipart/form-data">
-            <h:message for="btn-upload" 
-                       style="display: block;"
-                       infoStyle="display: block;" infoClass="alert alert-info"
-                       warnStyle="display: block;" warnClass="alert"
-                       errorStyle="display: block;" errorClass="alert alert-error"
-                       fatalStyle="display: block;" fatalClass="alert alert-error"/>
-            <h:inputFile id="photo" value="#{profmgr.profilePhoto}"/>
-            <h:commandButton id="btn-upload" value="Upload" action="#{profmgr.uploadProfilePhoto}"
-                             styleClass="btn btn-dejt">
-              <f:ajax execute="photo" render="@form"/>
-            </h:commandButton>
-          </h:form>
-          <h:form id="form-profile" styleClass="form-horizontal">
-            <h:message for="#{saveprofile.clientId}" 
-                       style="display: block;"
-                       infoStyle="display: block;" infoClass="alert alert-info"
-                       warnStyle="display: block;" warnClass="alert"
-                       errorStyle="display: block;" errorClass="alert alert-error"
-                       fatalStyle="display: block;" fatalClass="alert alert-error"/>
-            <!-- birth day
-            ================================================== -->
-            <h:panelGroup id="bd-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Data Urodzenia" styleClass="control-label" for="ubd-day"/>
-              <div class="controls controls-row">
-                <h:selectOneMenu id="ubd-day" binding="#{ubdday}" styleClass="span1" value="#{profmgr.day}">
-                  <f:selectItem itemLabel="Dzień" itemValue=""/>
-                  <f:selectItems value="#{days}" var="day" itemLabel="#{day}" itemValue="#{day}"/>
-                </h:selectOneMenu>
-                <h:selectOneMenu id="ubd-month" binding="#{ubdmonth}" styleClass="span1" value="#{profmgr.month}">
-                  <f:selectItem itemLabel="Miesiąc" itemValue=""/>
-                  <f:selectItems value="#{months}" var="month" itemLabel="#{month}" itemValue="#{month}"/>
-                </h:selectOneMenu>
-                <h:selectOneMenu id="ubd-year" binding="#{ubdyear}" styleClass="span1" value="#{profmgr.year}">
-                  <f:selectItem itemLabel="Rok" itemValue=""/>
-                  <f:selectItems value="#{years}" var="year" itemLabel="#{year}" itemValue="#{year}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- height
-            ================================================== -->
-            <h:panelGroup id="uheight-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Wzrost" styleClass="control-label" for="uheight"/>
-              <div class="controls">
-                <h:selectOneMenu id="uheight" binding="#{uheight}" styleClass="span1" value="#{profmgr.height}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{heights}" var="height" itemLabel="#{height}" itemValue="#{height}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- orientation
-            ================================================== -->
-            <h:panelGroup id="orientation-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Orientacja" styleClass="control-label" for="orientation"/>
-              <div class="controls">
-                <h:selectOneMenu id="orientation" binding="#{orientation}" styleClass="span2" value="#{profmgr.orientation}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{orientationValues}" var="ov" itemLabel="#{ov.desc}" itemValue="#{ov}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- body
-            ================================================== -->
-            <h:panelGroup id="ufit-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Sylwetka" styleClass="control-label" for="ufit"/>
-              <div class="controls">
-                <h:selectOneMenu id="ufit" binding="#{ufit}" styleClass="span2" value="#{profmgr.bodyType}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{bodyTypes}" var="bt" itemLabel="#{bt.desc}" itemValue="#{bt}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- eye color
-            ================================================== -->
-            <h:panelGroup id="ueyes-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Kolor Oczu" styleClass="control-label" for="ueyes"/>
-              <div class="controls">
-                <h:selectOneMenu id="ueyes" binding="#{ueyes}" styleClass="span2" value="#{profmgr.eyeColor}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{eyeColors}" var="eyec" itemLabel="#{eyec.desc}" itemValue="#{eyec}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- hair color
-            ================================================== -->
-            <h:panelGroup id="uhair-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Kolor Włosów" styleClass="control-label" for="uhair"/>
-              <div class="controls">
-                <h:selectOneMenu id="uhair" binding="#{uhair}" styleClass="span2" value="#{profmgr.hairColor}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{hairColors}" var="hairc" itemLabel="#{hairc.desc}" itemValue="#{hairc}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- education
-            ================================================== -->
-            <h:panelGroup id="edu-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Wykształcenie" styleClass="control-label" for="uedu"/>
-              <div class="controls">
-                <h:selectOneMenu id="uedu" binding="#{uedu}" styleClass="span2" value="#{profmgr.education}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{educationTypes}" var="etype" itemLabel="#{etype.desc}" itemValue="#{etype}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- occupation
-            ================================================== -->
-            <h:panelGroup id="occupation-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Zawód" styleClass="control-label" for="occupation"/>
-              <div class="controls">
-                <h:selectOneMenu id="occupation" binding="#{occupation}" styleClass="span2" value="#{profmgr.occupation}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{occupationTypes}" var="occtype" itemLabel="#{occtype.desc}" itemValue="#{occtype}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- marital status
-            ================================================== -->
-            <h:panelGroup id="marital-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Stan Cywilny" styleClass="control-label" for="marital"/>
-              <div class="controls">
-                <h:selectOneMenu id="marital" binding="#{marital}" styleClass="span2" value="#{profmgr.maritalStatus}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{maritalStatuses}" var="marstat" itemLabel="#{marstat.desc}" itemValue="#{marstat}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <!-- religion
-            ================================================== -->
-            <h:panelGroup id="religion-pnl" layout="block" styleClass="control-group">
-              <h:outputLabel value="Wyznanie" styleClass="control-label" for="religion"/>
-              <div class="controls">
-                <h:selectOneMenu id="religion" binding="#{religion}" styleClass="span2" value="#{profmgr.religion}">
-                  <f:selectItem itemLabel="Wybierz" itemValue=""/>
-                  <f:selectItems value="#{religions}" var="rel" itemLabel="#{rel.desc}" itemValue="#{rel}"/>
-                </h:selectOneMenu>
-              </div>
-            </h:panelGroup>
-            <div class="control-group">
-              <div class="controls">
-                <h:commandLink id="saveprofile" binding="#{saveprofile}" styleClass="btn btn-large btn-dejt" value="Zapisz Zmiany">
-                  <f:ajax execute="@form" render="@form" listener="#{profmgr.saveUserProfile}"
-                          onevent="hideMessage"/>
-                </h:commandLink>
-              </div>
-            </div>
-          </h:form>
         </div>
         
         <!-- preferences tab
@@ -420,7 +439,7 @@
         
         <!-- photo ablbums tab
         ================================================== -->
-        <div class="tab-pane" id="albums">
+        <div class="tab-pane" id="albums" style="min-height: 500px;">
         </div>
       </div>
     </div>

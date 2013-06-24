@@ -114,6 +114,9 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date firstLogin;
     
+    @Column(name = "ProfilePicture")
+    private String profilePicture;
+    
     @Transient
     private Msisdn msisdn;
     
@@ -331,6 +334,14 @@ public class User implements Serializable {
 
     public void setFirstLogin(Date firstLogin) {
         this.firstLogin = firstLogin;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
     
     @Override

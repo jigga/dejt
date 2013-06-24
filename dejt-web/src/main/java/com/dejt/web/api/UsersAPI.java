@@ -30,7 +30,7 @@ public class UsersAPI {
     
     /**
      * {0} shall be replaced by {@link User#getUid() user's identifier}.
-     * {1} shall be replaced by {@link Picture#getId() photo's identifier}.
+     * {1} shall be replaced by {@link Picture#pictureFile file name}.
      */
     protected static final String BASE_URI_USER_PHOTO = "/upload/dejt/{0}/{1}";
     

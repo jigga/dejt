@@ -13,9 +13,15 @@ import com.dejt.common.model.DMaritalstatus;
 import com.dejt.common.model.DOccupation;
 import com.dejt.common.model.DOrientation;
 import com.dejt.common.model.DReligion;
+import com.dejt.common.model.Picture;
 import com.dejt.common.model.Profile;
 import com.dejt.common.model.User;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,6 +46,19 @@ import javax.servlet.http.Part;
 public class ProfileManager implements Serializable {
     
     private static final long serialVersionUID = -4389893235046227693L;
+    
+    /**
+     * Base URI for user's photos.
+     * {0} shall be replaced by {@link User#getUid() user's identifier}.
+     */
+    protected static final String BASE_URI_USER_PHOTOS_DIR = "/upload/dejt/{0}";
+    
+    /**
+     * Base URI for user's photo.
+     * {0} shall be replaced by {@link User#getUid() user's identifier}.
+     * {1} shall be replaced by {@link Picture#pictureFile picture name}.
+     */
+    protected static final String BASE_URI_USER_PHOTO = "/upload/dejt/{0}/{1}";
     
     @Inject
     private CRUDFacade facade;
@@ -205,6 +224,10 @@ public class ProfileManager implements Serializable {
     public void setReligion(DReligion.Religion religion) {
         this.religion = religion;
     }
+
+    public User getUser() {
+        return user;
+    }
     
     @Produces
     @SessionScoped
@@ -366,6 +389,36 @@ public class ProfileManager implements Serializable {
     /**
      * Handles profile photo upload requests.
      */
-    public void uploadProfilePhoto() {}
+    public void uploadProfilePhoto(AjaxBehaviorEvent event) {
+        
+        try {
+            System.out.println("Profilemanager;uploadProfilePhoto;profilePicture=" + profilePhoto.getName());
+            Path picturesDir = 
+                Paths.get(MessageFormat.format(BASE_URI_USER_PHOTOS_DIR, user.getUid()));
+            System.out.println("Profilemanager;uploadProfilePhoto;picturesDir=" + picturesDir);
+            boolean picturesDirExist = 
+                Files.exists(picturesDir, LinkOption.NOFOLLOW_LINKS);
+            if (!picturesDirExist) {
+                Files.createDirectory(picturesDir);
+            }
+            
+            String targetFileName = String.valueOf(System.nanoTime());
+            Path pictureFile = 
+                Paths.get(MessageFormat.format(BASE_URI_USER_PHOTO, user.getUid(), targetFileName));
+            System.out.println("Profilemanager;uploadProfilePhoto;pictureFile=" + pictureFile);
+            Files.copy(profilePhoto.getInputStream(), pictureFile);
+            
+            user.setProfilePicture(targetFileName);
+            facade.update(user);
+            
+            FacesContext.getCurrentInstance().addMessage(
+                event.getComponent().getClientId(),
+                new FacesMessage("Zdjęcie profilowe zostało zmienione.")
+            );
+            
+        } catch (Exception e) {
+        }
+        
+    }
     
 }
