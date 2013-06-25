@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -126,6 +127,48 @@ public class UsersAPI {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         }
         
+    }
+    
+    /**
+     * Turns dejting mode on.
+     * 
+     * @param uid
+     * @return 
+     */
+    @POST
+    @Path("/{uid}/dejt")
+    public Response setDejtingModeOn(@PathParam("uid") String uid) {
+        try {
+            User user = facade.read(User.class, uid);
+            if (user!=null && !user.isActive()) {
+                user.setActive(true);
+                facade.update(user);
+            }
+        } catch (Exception e) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+        return Response.ok().build();
+    }
+    
+    /**
+     * Turns dejting mode off.
+     * 
+     * @param uid
+     * @return 
+     */
+    @POST
+    @Path("/{uid}/donedejting")
+    public Response setDejtingModeOff(@PathParam("uid") String uid) {
+        try {
+            User user = facade.read(User.class, uid);
+            if (user!=null && user.isActive()) {
+                user.setActive(false);
+                facade.update(user);
+            }
+        } catch (Exception e) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        }
+        return Response.ok().build();
     }
     
 }
