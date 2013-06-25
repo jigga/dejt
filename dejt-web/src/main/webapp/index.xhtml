@@ -11,7 +11,7 @@
     <div class="welcome">
       <div class="container" style="height: 500px; background: url('http://dejt.arkadiuszg.pl/assets/img/foty.png') no-repeat transparent;">
         <h:panelGroup id="registration" layout="block">
-          <h:form id="form-registration" class="pull-right" style="margin-right: 70px;">
+          <h:form id="form-registration">
             <h:panelGroup id="registration-pnl" layout="block" rendered="#{!registrar.codeSent}">
               <h3>Zarejestruj się</h3>
               <h:panelGroup id="uid-pnl" layout="block"
@@ -72,12 +72,16 @@
                 </div>
               </div>
               <h:commandLink id="register" styleClass="btn btn-large btn-dejt" value="Utwórz Konto">
-                <f:ajax execute=":form-registration:registration-pnl" render="@form" listener="#{registrar.registerBtnClicked}"/>
+                  <f:ajax execute=":form-registration:registration-pnl" render="@form" listener="#{registrar.registerBtnClicked}"/>
               </h:commandLink>
             </h:panelGroup>
-            <h:panelGroup id="sms-pnl" layout="block" rendered="#{registrar.codeSent and !registrar.registered}">
-              <h3>Wpisz kod weryfikacyjny</h3>
+            <h:panelGroup id="sms-pnl" layout="block" rendered="#{registrar.codeSent and !registrar.registered}"
+                          style="width: 400px;">
+              <h3><h:outputText value="Weryfikacja SMS"/></h3>
               <h:panelGroup layout="block" styleClass="#{code.valid ? 'control-group' : 'control-group error'}">
+                <p class="lead" style="margin-top: 50px;">
+                  <h:outputText value="Na podany przez Ciebie numer telefonu wysłąny został kod weryfikacyjny - wpisz go w polu poniżej."/>
+                </p>
                 <div class="controls">
                   <h:inputText id="code" binding="#{code}" p:placeholder="Kod weryfikacyjny" styleClass="span4"
                                value="#{registrar.userConfirmationCode}"/>
@@ -86,12 +90,14 @@
               </h:panelGroup>
               <h:commandLink id="verify" styleClass="btn btn-large btn-dejt" value="Utwórz Konto">
                 <f:param name="cid" value="#{registrar.cid}"/>
-                <f:ajax execute=":form-registration:sms-pnl" render="@form" listener="#{registrar.registerUser}"/>
+                  <f:ajax execute=":form-registration:sms-pnl" render="@form" listener="#{registrar.registerUser}"/>
               </h:commandLink>
             </h:panelGroup>
             <h:panelGroup id="confirm-pnl" layout="block" rendered="#{registrar.registered}" style="width: 400px;">
               <h3><h:outputText value="Gratulacje!"/></h3>
-              <p class="lead"><h:outputText value="Konto w serwisie zostało utworzone. Zaloguj się używając formularza logowania w pasku nawigacji."/></p>
+              <p class="lead" style="margin-top: 50px;">
+                <h:outputText value="Konto w serwisie zostało utworzone. Zaloguj się używając formularza logowania w pasku nawigacji."/>
+              </p>
             </h:panelGroup>
           </h:form>
         </h:panelGroup><!--/registration-->
@@ -103,19 +109,19 @@
     <!-- Three columns of text below the carousel -->
     <div class="row">
       <div class="span4">
-        <img src="http://dejt.arkadiuszg.pl/assets/img/ikona01.png"></img>
+        <img src="http://dejt.arkadiuszg.pl/assets/img/ikona01.png" style="margin-bottom: 8px;"></img>
         <h2>Określ Kogo Szukasz</h2>
-        <p style="line-height: 22px;">Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+        <p style="line-height: 22px;">To proste! Utwórz konto, zaloguj się i zdefiniuj swój profil - w ten sposób inni będą mogli Cię odnaleźć. Potem zdefiniuj preferencje określające cechy i charakter osoby, którą chciałbyś/chciałabyś poznać, a resztę zostaw nam - możesz liczyć na "match made in heaven" :)</p>
         <p style="margin-top: 35px;"><a class="btn btn-dejt" href="#">View details &#187;</a></p>
       </div><!-- /.span4 -->
       <div class="span4">
         <img src="http://dejt.arkadiuszg.pl/assets/img/ikona02.png"></img>
         <h2>Wyjdź z Domu</h2>
-        <p style="line-height: 22px;">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <p style="line-height: 22px;">Siedząc w domu nikogo nie poznasz ;) Jak już zdefiniujesz swój profil i preferencje, zainstaluj aplikację Dejt na smartfona, włącz tryb randkowy i wyjdź z domu - będziesz zaskoczona/zaskoczony jak wiele ciekawych osób jest na wyciągnięcie ręki.</p>
         <p style="margin-top: 35px;"><a class="btn btn-dejt" href="#">View details &#187;</a></p>
       </div><!-- /.span4 -->
       <div class="span4">
-        <img src="http://dejt.arkadiuszg.pl/assets/img/ikona03.png"></img>
+        <img src="http://dejt.arkadiuszg.pl/assets/img/ikona03.png" style="margin-bottom: 16px;"></img>
         <h2>Baw Się</h2>
         <p style="line-height: 22px;">Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
         <p style="margin-top: 35px;"><a class="btn btn-dejt" href="#">View details &#187;</a></p>

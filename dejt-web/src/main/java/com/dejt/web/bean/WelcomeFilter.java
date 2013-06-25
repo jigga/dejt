@@ -22,13 +22,19 @@ import javax.servlet.http.HttpServletResponse;
  * @author jigga
  */
 @WebFilter(
-    filterName = "LoginFilter",
-    urlPatterns = {"/home/*"}
+    filterName = "WelcomeFilter",
+    urlPatterns = {"/", "/index.xhtml"}
 )
-public class LoginFilter implements Filter {
+public class WelcomeFilter implements Filter {
     
     private static final String PARTIAL_REDIRECT_RESPONSE_FORMAT = 
         "<partial-response><redirect url=\"%s\"/></partial-response>";
+    
+    /*
+     * Regular expression pattern representing views/pages for which 
+     * authentication should be ommited.
+     */
+    private static final String WELCOME_FILES = "/(index.xhtml)?";
     
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -73,35 +79,24 @@ public class LoginFilter implements Filter {
         String uri = httprequest.getRequestURI();
         System.out.println("Request URI=" + uri);
         
-        if (!login.isLoggedIn()) {
+        if (login.isLoggedIn()) {
             
-            System.out.println("User not logged in.");
-            // Target view to redirect the user to after successful login
-            StringBuilder target = 
-                new StringBuilder();
-
-            if (isAjaxRequest(httprequest)) {
-                String referer = httprequest.getHeader("Referer");
-                if (referer != null && !referer.isEmpty()) {
-                    login.setTarget(referer);
-                }
-                PrintWriter pw = response.getWriter();
-                String partialResponse = String.format(
-                    PARTIAL_REDIRECT_RESPONSE_FORMAT,
-                    "/index.xhtml"
-                );
-                pw.println(partialResponse);
-                pw.flush();
-            } else {
-                target.append(uri);
-                if (httprequest.getQueryString() != null) {
-                    target.append("?").append(httprequest.getQueryString());
-                }
-                login.setTarget(target.toString());
-                System.out.println("Redirecting user to /index.xhtml for login");
-                httpresponse.sendRedirect("/index.xhtml");
+            System.out.println("User " + login.getUser().getUid() + " is logged in.");
+            if (uri.matches(WELCOME_FILES)) {
+                System.out.println("Redirecting " + login.getUser().getUid() + " to /home/.");
+                if (isAjaxRequest(httprequest)) {
+                    PrintWriter pw = response.getWriter();
+                    String partialResponse = String.format(
+                        PARTIAL_REDIRECT_RESPONSE_FORMAT,
+                        "/home/"
+                    );
+                    pw.println(partialResponse);
+                    pw.flush();
+                } else {
+                    httpresponse.sendRedirect("/home/");
+                }    
+                return;
             }
-            return;
             
         }
         
@@ -114,7 +109,7 @@ public class LoginFilter implements Filter {
      */
     @Override
     public String toString() {
-        return String.format("LoginFilter(%s)", config==null ? "" : config);
+        return String.format("WelcomeFilter(%s)", config==null ? "" : config);
     }
     
     /*
