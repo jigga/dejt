@@ -13,11 +13,16 @@ import java.io.File;
 import java.text.MessageFormat;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ResourceContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 /**
@@ -28,6 +33,9 @@ import javax.ws.rs.core.Response;
 @RequestScoped
 @Path("/users")
 public class UsersAPI {
+    
+    @Context
+    protected HttpServletRequest request;
     
     /**
      * {0} shall be replaced by {@link User#getUid() user's identifier}.
@@ -169,6 +177,27 @@ public class UsersAPI {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         }
         return Response.ok().build();
+    }
+    
+    /**
+     * Authenticates Dejt mobile application user.
+     * 
+     * @param uid User identifier.
+     * @param pwd User password.
+     * 
+     * @return 
+     */
+    @POST
+    @Path("/{uid}/authenticate")
+    public Response authenticate(@FormParam("uid") String uid, @FormParam("pwd") String pwd) {
+        
+        try {
+            request.login(uid, pwd);
+        } catch (ServletException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.ok().build();
+        
     }
     
 }
