@@ -9,11 +9,11 @@
 
   <ui:define name="header">
     <div class="welcome">
-      <div class="container" style="background: url('http://dejt.arkadiuszg.pl/assets/img/foty.png') no-repeat transparent">
-        <h:panelGroup id="registration-box" layout="block"  styleClass="registration">
-          <h:form id="registration">
+      <div class="container" style="height: 500px; background: url('http://dejt.arkadiuszg.pl/assets/img/foty.png') no-repeat transparent;">
+        <h:panelGroup id="registration" layout="block">
+          <h:form id="form-registration" class="pull-right" style="margin-right: 70px;">
             <h:panelGroup id="registration-pnl" layout="block" rendered="#{!registrar.codeSent}">
-              <h3 style="color: #ffffff;">Zarejestruj się</h3>
+              <h3>Zarejestruj się</h3>
               <h:panelGroup id="uid-pnl" layout="block"
                             styleClass="#{uid.valid ? 'control-group' : 'control-group error'}">
                 <div class="controls">
@@ -63,7 +63,7 @@
                   <h:message for="upassword" styleClass="help-block"/>
                 </div>
               </div>
-              <div class="control-group" style="margin-bottom: 15px;">
+              <div class="control-group" style="margin-bottom: 10px;">
                 <div class="controls">
                   <h:selectOneRadio value="#{registrar.gender}" styleClass="table table-borderless gender" style="margin: 0;">
                     <f:selectItem itemLabel="Kobieta" itemValue="F"/>
@@ -72,11 +72,11 @@
                 </div>
               </div>
               <h:commandLink id="register" styleClass="btn btn-large btn-dejt" value="Utwórz Konto">
-                <f:ajax execute="@form" render=":registration-box" listener="#{registrar.registerBtnClicked}"/>
+                <f:ajax execute=":form-registration:registration-pnl" render="@form" listener="#{registrar.registerBtnClicked}"/>
               </h:commandLink>
             </h:panelGroup>
             <h:panelGroup id="sms-pnl" layout="block" rendered="#{registrar.codeSent and !registrar.registered}">
-              <h3 style="color: #ffffff; text-shadow: 0 1px 1px rgba(0,0,0,.4);">Wpisz kod weryfikacyjny</h3>
+              <h3>Wpisz kod weryfikacyjny</h3>
               <h:panelGroup layout="block" styleClass="#{code.valid ? 'control-group' : 'control-group error'}">
                 <div class="controls">
                   <h:inputText id="code" binding="#{code}" p:placeholder="Kod weryfikacyjny" styleClass="span4"
@@ -85,16 +85,16 @@
                 </div>
               </h:panelGroup>
               <h:commandLink id="verify" styleClass="btn btn-large btn-dejt" value="Utwórz Konto">
-                <f:param name="cid" value="#{registrar.cid}" />
-                <f:ajax execute="@form" render=":registration-box" listener="#{registrar.registerUser}"/>
+                <f:param name="cid" value="#{registrar.cid}"/>
+                <f:ajax execute=":form-registration:sms-pnl" render="@form" listener="#{registrar.registerUser}"/>
               </h:commandLink>
             </h:panelGroup>
-            <h:panelGroup layout="block" rendered="#{registrar.registered}" style="width: 400px;">
-              <h2 style="color: #ffffff; text-shadow: 0 1px 1px rgba(0,0,0,.4);"><h:outputText value="Gratulacje!"/></h2>
+            <h:panelGroup id="confirm-pnl" layout="block" rendered="#{registrar.registered}" style="width: 400px;">
+              <h3><h:outputText value="Gratulacje!"/></h3>
               <p class="lead"><h:outputText value="Konto w serwisie zostało utworzone. Zaloguj się używając formularza logowania w pasku nawigacji."/></p>
             </h:panelGroup>
           </h:form>
-        </h:panelGroup><!--/registration-box-->
+        </h:panelGroup><!--/registration-->
       </div>
     </div>
   </ui:define>

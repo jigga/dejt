@@ -30,9 +30,9 @@
         select[size] {height: 30px;}
         hr {border-top: 1px solid #F28400;}
         .gender tbody tr td {padding: 0 8px;}
-        .gender tbody tr td input {display: inline-block;}
+        .gender tbody tr td input[radio] {display: inline-block; height: 24px; margin: 0;}
         .gender tbody tr td label {
-          display: inline-block; margin-bottom: 0; padding-top: 5px; padding-left: 10px; vertical-align: middle; font-size: 22px;
+          display: inline-block; margin-bottom: 0; padding-top: 4px; padding-left: 10px; vertical-align: middle; font-size: 20px;
         }
         /*        
         input[type="radio"] {
@@ -126,8 +126,12 @@
           margin-bottom: 40px;
         }
 
-        .registration {margin-top: 90px; float: right;}
-        .registration .control-group {margin-bottom: 5px;}
+        #registration {
+          margin-top: 75px; float: right; width: 515px; height: 425px;
+          background: url("http://dejt.arkadiuszg.pl/assets/img/formbg1.png") no-repeat;
+        }
+        #registration h3 {margin-top: 45px; color: #5A5A5A; /*text-shadow: 0 1px 1px rgba(0,0,0,.4);*/}
+        #registration div.control-group {margin-bottom: 2px;}
 
         /* MARKETING CONTENT
         -------------------------------------------------- */
@@ -250,7 +254,7 @@
             background-size: 100% 500px;
           }
 
-          .registration {margin-top: 60px; float: none;}
+          #registration {margin-top: 60px; float: none;}
 
           .marketing .span4 + .span4 {
             margin-top: 40px;
@@ -342,7 +346,7 @@
       ================================================== -->
       <!-- Placed at the end of the document so the pages load faster -->
       <script src="//dejt.arkadiuszg.pl/assets/js/holder.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+      <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>-->
       <script src="//dejt.arkadiuszg.pl/assets/bootstrap/js/bootstrap.min.js"></script>
 
     </h:body>
